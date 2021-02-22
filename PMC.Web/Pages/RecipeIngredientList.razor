@@ -1,0 +1,225 @@
+﻿@page "/recipeingredientlist"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedIngredientService SelectedIngredientService
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+
+
+
+@if (SelectedIngredientService.IngredientCount == 0)
+{
+    <p>This recipe does not contain any ingredients</p>
+}
+
+@if (SelectedIngredientService.IngredientCount > 0)
+{
+    <div width="500px">
+        <table style="overflow-x: auto;">
+            <tr>
+                <th style="background-color:lightgray; text-align:center"><b>Qty</b></th>
+                <th style="background-color:lightgray;"><b>UoM</b></th>
+                <th style="background-color:lightgray;"><b>Ingredient</b></th>
+                <th style="background-color:lightgray; text-align:center"><b>Delete</b></th>
+            </tr>
+            @foreach (var list in ingredients)
+            {
+                decimal currentQty = list.IngredientQty;
+                int currentUOM = list._riUOMID;
+                <tr>
+                    <td align="center" valign="top">
+                        <input name="numQty" type="number" style="width:60px; border-width: 0; background-color: rgb(233, 238, 252); vertical-align:top" min=".01" max="20000"
+                               @bind="@currentQty"
+                               @onblur="@(() => { newIngredientQty = currentQty; SelectedIngredientService.IngredientID = list._riIngredientID; StateHasChanged(); setIngredientQty(); })">
+                    </td>
+                    <td valign="top">
+                        @list.UomDesc
+                    </td>
+                    <td style="position:relative" valign="top">@list.IngredientName @list.IngredientCondition</td>
+                    <td align="center" valign="top">
+                        <label>
+                            <input name="choiceIngredientID" type="radio" tabindex="-1"
+                                   value="@list._riIngredientID"
+                                   @onchange="@(() => { SelectedIngredientService.IngredientID = list._riIngredientID; })"
+                                   @oninput="@AskDeleteIngredient">
+                        </label>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <br>
+
+}
+@if (errmsg.Length > 0)
+{
+    <div style="width:20px; word-wrap:break-word; background-color:lightpink; text-align:center">@errmsg</div>
+}
+
+
+@if (yesDelete == true)
+{
+    <div align="right" >
+        <div align="left">
+            <BlazorModal Title="Delete Ingredient" IsOpened="isOpened">
+                <ModalBody>
+                    <div>Are you sure you would like to delete this ingredient?</div>
+                    <div style="padding-left:10px">If yes, click the <b>Delete Ingredient</b> button.</div>
+                    <div style="padding-left:10px">If no, click <b>Close</b>.</div>
+                </ModalBody>
+                <ModalFooter>
+                    <div style="text-align:center"><input type="button" @onclick="@DeleteIngredient" value="Delete Ingredient" style="background-color:yellow"/>    <input type="button" @onclick="@DoNotDeleteIngredient" value="Do Not Delete Ingredient" /></div>
+                </ModalFooter>
+            </BlazorModal>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+    private Recipe recipe = new Recipe();
+    private int recipeIngredientCount = 0;
+    private int initialIngredientCount = 0;
+    private int ingredientID;
+    private decimal ingredientQty;
+    private int uom;
+    private string ingrCondition;
+    //private int testIngredientID;
+    //private List<Ingredient> ingredients = new List<Ingredient>();
+    private List<RecipeIngredient> ingredients = new List<RecipeIngredient>();
+    private List<RecipeIngredientRepo> recipeIngredients = new List<RecipeIngredientRepo>();
+    private List<Uom> uomList = new List<Uom>();
+    private bool ack = false;
+    private bool yesDelete = false;
+    protected bool isOpened = false;
+    protected bool checkedRadio = false;
+    protected bool ingredientDeleted = false;
+    protected decimal newIngredientQty;
+    protected int newUOM;
+    private string errmsg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        //recipe = repo.GetRecipeByRecipeID(SelectedRecipeService.RecipeID);
+        //ingredients = recipe.Ingredients.ToList();
+
+        var currRecipeIngredientRepo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+        var newList = currRecipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
+        ingredients = newList.ToList();
+        //SelectedIngredientService.IngredientCount = recipeIngredients.Count();
+        var ingrList = currRecipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
+        initialIngredientCount = ingrList.Count();
+        SelectedIngredientService.IngredientCount = ingrList.Count();
+
+        var uomRepo = repoFactory.Get<PMC.Data.UomRepo>();
+        var uomlist = uomRepo.GetUomList().ToList();
+        uomList = uomlist;
+
+        //SelectedIngredientService.IngredientID = 0;
+        ingredientDeleted = false;
+        StateHasChanged();
+    }
+
+    private void getIngredients()
+    {
+        var currRecipeIngredientRepo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+        var newList = currRecipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
+        ingredients = newList.ToList();
+        SelectedIngredientService.IngredientCount = recipeIngredients.Count();
+    }
+
+    protected async void AskDeleteIngredient()
+    {
+        checkedRadio = true;
+        OpenModal();
+        yesDelete = true;
+        StateHasChanged();
+
+    }
+
+    protected async void DoNotDeleteIngredient()
+    {
+        checkedRadio = false;
+        yesDelete = false;
+        StateHasChanged();
+        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+    }
+
+    protected async void DeleteIngredient()
+    {
+
+        var repo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+        repo.DeleteRecipeIngredientByRecipeIDIngredientIDUserID(SelectedRecipeService.RecipeID, SelectedIngredientService.IngredientID, userID);
+        SelectedIngredientService.IngredientID = 0;
+        ingredientDeleted = true;
+        var ingrList = repo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
+        ingredients = ingrList.ToList();
+        SelectedIngredientService.IngredientCount = ingrList.Count();
+        CloseModal();
+        StateHasChanged();
+
+    }
+
+    //PMC1033-02
+    private void setIngredientQty()
+    {
+        checkIngredientInfo();
+        if (newIngredientQty <= 20000)
+        {
+            var repo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+            var updateRecord = repo.SetRecipeIngredientQtyByRecipeID(SelectedRecipeService.RecipeID, SelectedIngredientService.IngredientID, newIngredientQty);
+        }
+
+
+        refreshPage();
+    }
+
+    //Although this method is here we are not providing the ability to modify the UOM
+    //because I can't figure out how to select the current UOM to make it display in the drop down.
+    private void setIngredientUOM()
+    {
+        var repo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+        var updateRecord = repo.SetRecipeIngredientUOMByRecipeID(SelectedIngredientService.IngredientID, newUOM);
+
+        refreshPage();
+    }
+
+    private void refreshPage()
+    {
+        SelectedIngredientService.IngredientID = 0;
+        SelectedIngredientService.OnChange += StateHasChanged;
+        StateHasChanged();
+        NavManager.NavigateTo(HomeURIService.homeUri + "empty");
+        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+    }
+
+    private void checkIngredientInfo()
+    {
+        if (newIngredientQty > 20000)
+        {
+            errmsg = "The quantity cannot be greater than 20,001. Please update the quantity to a value less than 20,001.";
+        }
+    }
+
+
+    void OpenModal()
+    {
+        isOpened = true;
+
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+
+}

@@ -1,0 +1,4 @@
+C:\Users\Debora\source\repos\PMC\PMC.Test\obj\Debug\netcoreapp3.1\PMC.Test.csprojAssemblyReference.cache
+C:\Users\Debora\source\repos\PMC\PMC.Test\obj\Debug\netcoreapp3.1\PMC.Test.AssemblyInfoInputs.cache
+C:\Users\Debora\source\repos\PMC\PMC.Test\obj\Debug\netcoreapp3.1\PMC.Test.AssemblyInfo.cs
+C:\Users\Debora\source\repos\PMC\PMC.Test\obj\Debug\netcoreapp3.1\PMC.Test.csproj.CoreCompileInputs.cache

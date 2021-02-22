@@ -1,0 +1,9 @@
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\bin\Debug\netcoreapp3.1\PMC.NoSQL.deps.json
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\bin\Debug\netcoreapp3.1\PMC.NoSQL.dll
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\obj\Debug\netcoreapp3.1\PMC.NoSQL.AssemblyInfoInputs.cache
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\obj\Debug\netcoreapp3.1\PMC.NoSQL.AssemblyInfo.cs
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\bin\Debug\netcoreapp3.1\PMC.NoSQL.pdb
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\obj\Debug\netcoreapp3.1\PMC.NoSQL.csproj.CoreCompileInputs.cache
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\obj\Debug\netcoreapp3.1\PMC.NoSQL.dll
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\obj\Debug\netcoreapp3.1\PMC.NoSQL.pdb
+C:\Users\Debora\source\repos\PMC\PMC.NoSQL\obj\Debug\netcoreapp3.1\PMC.NoSQL.csprojAssemblyReference.cache

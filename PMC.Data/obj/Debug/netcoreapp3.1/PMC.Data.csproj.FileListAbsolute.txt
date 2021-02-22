@@ -1,0 +1,12 @@
+C:\Users\Debora\source\repos\PMC\PMC.Data\bin\Debug\netcoreapp3.1\PMC.Data.deps.json
+C:\Users\Debora\source\repos\PMC\PMC.Data\bin\Debug\netcoreapp3.1\PMC.Data.dll
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.csprojAssemblyReference.cache
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.AssemblyInfoInputs.cache
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.AssemblyInfo.cs
+C:\Users\Debora\source\repos\PMC\PMC.Data\bin\Debug\netcoreapp3.1\PMC.Data.pdb
+C:\Users\Debora\source\repos\PMC\PMC.Data\bin\Debug\netcoreapp3.1\PMC.DataModel.dll
+C:\Users\Debora\source\repos\PMC\PMC.Data\bin\Debug\netcoreapp3.1\PMC.DataModel.pdb
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.csproj.CoreCompileInputs.cache
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.csproj.CopyComplete
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.dll
+C:\Users\Debora\source\repos\PMC\PMC.Data\obj\Debug\netcoreapp3.1\PMC.Data.pdb

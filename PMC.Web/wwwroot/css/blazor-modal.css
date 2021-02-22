@@ -1,0 +1,82 @@
+﻿.blazor-modal{
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.1);
+}
+
+.blazor-modal-content {
+    width: 50%;
+    height:auto;
+    margin-left: 25%;
+    margin-top: 1%;
+    background-color: white;
+    border-radius: 20px;
+    -webkit-box-shadow: 6px 4px 38px -21px rgba(0,0,0,0.75);
+    box-shadow: 6px 4px 38px -21px rgba(0,0,0,0.75);
+    overflow:hidden;
+}
+
+.show {
+    display: block;
+    animation-name: show-animation;
+    animation-duration:1.5s;
+}
+
+@keyframes show-animation{
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+
+.hide{
+    display:none;
+}
+
+.blazor-modal-header {
+    padding: 3px;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+.blazor-modal-title{
+    margin:5px;
+    display:inline-block;
+}
+
+.blazor-modal-close-button {
+    float: right;
+    margin: 2px;
+    cursor: pointer;
+    
+}
+
+.blazor-modal-close-button:hover {
+    color: darkgray;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+.blazor-modal-body {
+    padding: 10px;
+    border-top: solid;
+    border-bottom: solid;
+    border-width:.5px;
+    border-color: lightgray;
+}
+
+.blazor-modal-help {
+    font-size: 14px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.blazor-modal-help-1 {
+    font-size: 13px;
+    padding-top:0px;
+    padding-left: 12px;
+}
+
+.blazor-modal-footer {
+    padding: 5px;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}

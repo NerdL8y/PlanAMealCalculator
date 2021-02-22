@@ -1,0 +1,39 @@
+﻿@page "/terms"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+
+<h4>Terms and Definitions</h4>
+
+<table style="border:solid; border-width:.5px; border-color:#ddd">
+    <tr style="border:solid; border-width:.5px; border-color:#ddd; padding-left:10px">
+        <th style="border:solid; border-width:.5px; border-color:#ddd ; padding-left:10px">Term</th>
+        <th style="border:solid; border-width:.5px; border-color:#ddd; padding-left:10px">Definition</th>
+    </tr>
+    @foreach (var list in terms)
+    {
+        <tr style="border:solid; border-width:.5px; border-color:#ddd">
+            <td style="border:solid; border-width:.5px; border-color:#ddd; padding-left:10px">@list.TermWord</td>
+            <td style="border:solid; border-width:.5px; border-color:#ddd; padding-left:10px">@list.TermDefinition</td>
+        </tr>
+    }
+</table>
+<br />
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+    private List<Term> terms = new List<Term>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        var repo = repoFactory.Get<PMC.Data.TermsRepo>();
+        terms = repo.GetTerms().ToList();
+    }
+
+}
+

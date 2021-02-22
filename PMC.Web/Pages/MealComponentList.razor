@@ -1,0 +1,86 @@
+﻿@page "/mealcomponentlist"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject SelectedComponentService SelectedComponentService
+@inject SelectedMealService SelectedMealService
+<!--TODO - figure out why list of components is not refreshing-->
+
+<p>@SelectedMealService.MealID</p>
+<p>@componentCount</p>
+
+@if (SelectedMealService.MealID > 0 && componentCount > 0)
+{
+    <div class="grid-container">
+        <div class="grid-item grid-item-1">
+            <span style="font-size:13px"><b>My Components</b> (@componentCount each) </span>
+            @foreach (var list in components)
+            {
+                <div style="padding-left:5px">@list.CompName</div>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+
+    private Component component = new Component();
+    private List<MealComponent> mealComponents = new List<MealComponent>();
+    protected string componentName { get; set; }
+    protected int componentType { get; set; }
+    protected List<ComponentType> compTypes = new List<ComponentType>();
+    private List<Component> components = new List<Component>();
+    private List<Component> appetizers = new List<Component>();
+    private int appcount = 0;
+    private List<Component> entrees = new List<Component>();
+    private int entreecount = 0;
+    private List<Component> desserts = new List<Component>();
+    private int dessertcount = 0;
+    private int componentCount = 0;
+    private Meal meal = new Meal();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+
+
+    }
+
+
+    protected async void GetRepoInformation()
+    {
+        //component info
+        var mealRepo = repoFactory.Get<PMC.Data.MealRepo>();
+        meal = mealRepo.GetMealByMealID(SelectedMealService.MealID);
+        //components = meal.Components.ToList();
+        //componentCount = components.Count();
+
+        var repo = repoFactory.Get<PMC.Data.MealComponentRepo>();
+        mealComponents = repo.GetMealComponentsByMealID(SelectedMealService.MealID).ToList();
+        componentCount = mealComponents.Count();
+
+        //appetizers = components.GetComponentAppetizersByUserID(userID).ToList();
+        //entrees = componentRepo.GetComponentEntreesByUserID(userID).ToList();
+        //desserts = componentRepo.GetComponentDessertsByUserID(userID).ToList();
+        //appcount = appetizers.Count();
+        //entreecount = entrees.Count();
+        //dessertcount = desserts.Count();
+        //componentType = 0;
+
+        //component type info
+        //var repo = repoFactory.Get<PMC.Data.ComponentTypeRepo>();
+        //var repoList = repo.GetComponentTypes().ToList();
+        //compTypes = repoList;
+        StateHasChanged();
+
+    }
+
+}

@@ -1,0 +1,122 @@
+﻿@page "/mycomponentlist"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject SelectedComponentService SelectedComponentService
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+<!--Done for now.-->
+<div align="right">
+    <button style="font-size:16px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div style="font-size:14px" align="left">
+        <BlazorModal Title="My Component List" IsOpened="isOpened">
+            <ModalBody>
+                <div>A component is part of a meal.</div>
+                <div>Each meal can have one or more components like an Appetizer, Entrée, and/or Dessert.</div>
+                Each component can have one or more recipes that make up the component.<br />
+                <div style="padding-left:10px">For example, an Appetizer component may contain a Cheeseball recipe and a Smoked Oysters Appetizer recipe.</div>
+                <div>To add a component, click <b>Add a Component</b> in the navigation area on the left.</div>
+                <div>To view the details about a component, click on one of the listed components.</div>
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+
+<h3>My Component List</h3>
+@if (componentCount == 0)
+{
+    <p>We could not find any components. If you are new to PMC, select <b>Help</b> in the navigation area for instructions on how to create components.</p>
+}
+@if (componentCount != 0)
+{
+
+
+    <table class="display-rows">
+        <tr class="meals">
+            <th width="100px" style="text-align:center; vertical-align:middle">Type</th>
+            <th style="text-align:left; vertical-align:middle">Name</th>
+            <th width="50px" style="text-align:center; vertical-align:middle">View</th>
+        </tr>
+        @foreach (var list in components)
+        {
+            <tr>
+                <td align="center">@list.CompTypeDesc</td>
+                <td style="padding-left:10px">@list.CompName</td>
+                <td style="text-align:center; vertical-align:middle; padding-bottom:0px;">
+                    <label>
+                        <input name="choiceCompID" type="radio" tabindex="-1"
+                               @onchange="@(() => { SelectedComponentService.ComponentID = list.CompID; })"
+                               @oninput="@listChange">
+                    </label>
+                </td>
+            </tr>
+        }
+    </table>
+<br />
+}
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+
+    private List<Component> componentList = new List<Component>();
+    private List<Component> appetizers = new List<Component>();
+    private int appcount = 0;
+    private List<Component> entrees = new List<Component>();
+    private int entreecount = 0;
+    private List<Component> desserts = new List<Component>();
+    private int dessertcount = 0;
+    private int componentCount = 0;
+    private List<Component> components = new List<Component>();
+    protected List<ComponentType> compTypes = new List<ComponentType>();
+    private int componentID = 0;
+
+    //PMC1052-04 PMC1052-06
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        SelectedComponentService.ComponentID = 0;
+        SelectedComponentService.OnChange += StateHasChanged;
+        var repo = repoFactory.Get<PMC.Data.ComponentRepo>();
+        componentList = repo.GetComponentsByUserID(repoFactory.UserID).ToList();
+
+
+        //component info
+        var componentRepo = repoFactory.Get<PMC.Data.ComponentRepo>();
+        components = componentRepo.GetComponentsByUserID(userID).ToList();
+        componentCount = components.Count();
+        appetizers = componentRepo.GetComponentAppetizersByUserID(userID).ToList();
+        entrees = componentRepo.GetComponentEntreesByUserID(userID).ToList();
+        desserts = componentRepo.GetComponentDessertsByUserID(userID).ToList();
+        appcount = appetizers.Count();
+        entreecount = entrees.Count();
+        dessertcount = desserts.Count();
+
+        //component type info
+        var ctRepo = repoFactory.Get<PMC.Data.ComponentTypeRepo>();
+        var repoList = ctRepo.GetComponentTypes().ToList();
+        compTypes = repoList;
+        StateHasChanged();
+    }
+
+    public void listChange(ChangeEventArgs e)
+    {
+        isOpened = false;
+        SelectedComponentService.OnChange += StateHasChanged;
+        NavManager.NavigateTo(HomeURIService.homeUri + "mycomponent");
+    }
+
+    bool isOpened = false;
+    void OpenModal()
+    {
+        isOpened = true;
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+
+}

@@ -1,0 +1,117 @@
+﻿@page "/help"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+
+<h3>Get to Know PMC</h3>
+<div class="grid-help">
+    <div class="grid-help-1">
+        <div class="grid-help-1">
+            PMC offers the ability to create Meals. Once a meal has been created you will be able to print a shopping list, and print a Meal Preparation Timeline.
+            However, to get started, one must start from the beginning.
+            <div style="padding-left:10px">
+                Figure 1 illustrates what a Thanksgiving Meal would look like.
+                Notice the Meal is made up of Components, and the Components are made up of Recipes.
+                Therefore, a meal is built from the bottom up, meaning the recipes are entered first, then recipes are selected for a component, and then a component is selected for a meal.
+            </div>
+            <div ></div>
+        </div>
+        
+        <hr />
+        <h5>Recipes</h5>
+        <div>First things first, add your Recipes.</div>
+        <div style="padding-left:10px">Once the recipes have been created, they can be used over and over.</div>
+        <div style="padding-left:10px">
+            Click <b>Add a Recipe</b> in the navigation area to get started.  Add all the recipes you will need for a meal
+            and then come back to this help page and continue reading.
+        </div>
+        <hr />
+        <h5>Components</h5>
+        <div>Second thing on our to do list - Create a component.</div>
+        <div style="padding-left:10px">
+            Think of a component as a list of all the recipes you like to use together for a specific part of a meal.
+            If we look at the example of the Thanksgiving meal, the Thanksgiving Appetizers is a component.
+        </div>
+        <div style="padding-left:10px">
+            Click <b>Add a Component</b> in the navigation area to begin adding Components.  There are additional instructions for adding one or more recipes to a component.
+            Add one or more components you will need for your meal and then come back to this help page and continue reading.
+        </div>
+        <hr />
+        <h5>Meal</h5>
+        <div>Finally! We get to create a meal.</div>
+        <div style="padding-left:10px">
+            Click <b>Add a Meal</b> in the navigation area to add a Meal.  There are additional instructions for adding one or more recipes to a component.
+            Add one or more components you will need for your meal and then come back to this help page and continue reading.
+        </div>
+        <hr />
+        <h3>Navigating PMC</h3>
+        <h5>Navigation Area</h5>
+        <div style="padding-left:10px">Throughout PMC you will see instructions to select or click something in the <b>navigation area</b>.  The navigation area is the blue/purple colored area appearing on the left.</div>
+        <h5 style="padding-top:10px">Planned Meals</h5>
+        <div style="padding-left:10px">When you log into PMC, all meals with a meal date equal to, or greater than, today will appear.</div>
+        <h5 style="padding-top:10px">Shopping List</h5>
+        <div style="padding-left:10px">The Shopping List provides a list of all the ingredients needed for one or more meals that have been scheduled between the start and end dates.</div>
+        <div style="padding-left:15px">This allows you to check your pantry before heading to the grocery store.</div>
+        <h5 style="padding-top:10px">Meal List</h5>
+        <div style="padding-left:10px">The Meal List provides a list of all the meals you have created over time.  From the Meal List you can select a meal to view the components assigned to the meal.  Meals are made up of components. 
+                A meal can be either Breakfast, Brunch, Lunch, or Dinner.</div>
+        <div style="padding-left:15px">Once you select a meal to view, the details about the meal will appear.</div>
+        <div style="padding-left:10px">To view the Meal Preparation Timeline for the meal you are viewing, select <b>My Meal Prep Timeline</b>.</div>
+        <h5 style="padding-top:10px">Component List</h5>
+        <div style="padding-left:10px">The Component List provides a list of components that can be used with any meal you decide to create. 
+                A component is either an Appetizer, Entrée, or Dessert. Components are made up of recipes that you have selected to belong to the component.</div>
+        <h5 style="padding-top:10px">Recipe List</h5>
+        <div style="padding-left:10px">The Recipe List provides a list of all the recipes you have entered. One or more recipes can be added to a component that will be used in a meal. You can select any recipe from the list to view the details.</div>
+        <div style="padding-left:15px">If you have a lot of recipes, you can use the Search field to type in up to 4 keywords to narrow down the recipe you are looking for.</div>
+        <h5 style="padding-top:10px">Help</h5>
+        <div style="padding-left:10px">Selecting Help in the navigation area will display this help page.</div>
+        <br /><br />
+    </div>
+    <div class="grid-help-2">
+        <div align="center"; style="font-size:16px;"><b>Figure 1</b></div>
+        <div align="center"><img src="@pmcDiagram" style="width:432px; height:565px" alt="PMC Meal Diagram Example" /> </div>
+    </div>
+</div>
+
+
+<!--This if statement will display the button the help is set to show at start up.
+        If the user has selected to hide help on start up, this button will not appear-->
+@if (userHelp == 1)
+{
+    <div style="font-size:12px"> <br />
+        To hide help everytime you login, click here: <input type="button" value="Hide Help" @onclick="@hideHelp" /><br />
+        If you ever need to review the help screen, click on <b>Help</b> in the navigation area.
+    </div>
+}
+
+
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+    private string pmcDiagram = "PMC_Diagram.png";
+    private UserAccount user = new UserAccount();
+    private int userHelp;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        var repo = repoFactory.Get<PMC.Data.UserRepo>();
+        user = repo.GetUserByUserID(userID);
+        userHelp = user.ShowHelpOnStartUp;
+    }
+
+    protected void hideHelp()
+    {
+        var repo = repoFactory.Get<PMC.Data.UserRepo>();
+        repo.SetUserHideShowHelpOnStartUp(userID);
+        NavManager.NavigateTo(HomeURIService.homeUri + "plannedmeals");
+    }
+
+
+}

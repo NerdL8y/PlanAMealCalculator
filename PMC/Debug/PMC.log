@@ -1,0 +1,12 @@
+﻿  inputCheck.cpp
+  mainForm.cpp
+C:\Users\Debora\source\repos\PMC\PMC\mainForm.cpp(10,11): error C2976: 'std::array': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\utility(438): message : see declaration of 'std::array'
+C:\Users\Debora\source\repos\PMC\PMC\mainForm.cpp(10,31): error C3699: '^': cannot use this indirection on type 'std::array'
+C:\Users\Debora\source\repos\PMC\PMC\mainForm.cpp(10,31): message : compiler replacing '^' with '*' to continue parsing
+C:\Users\Debora\source\repos\PMC\PMC\mainForm.cpp(16,14): error C2352: 'inputCheck::inputValid': illegal call of non-static member function
+C:\Users\Debora\source\repos\PMC\PMC\inputCheck.h(25): message : see declaration of 'inputCheck::inputValid'
+  recipe.cpp
+C:\Users\Debora\source\repos\PMC\PMC\recipe.h(16,7): warning C4101: 'recipeID': unreferenced local variable
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  Generating Code...

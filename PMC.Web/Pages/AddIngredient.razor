@@ -1,0 +1,244 @@
+﻿@page "/addingredient"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedIngredientService SelectedIngredientService
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+<!--The Recipe ID has to be known for this page to operate, therefore the IF statements are necessary.-->
+@if (SelectedRecipeService.RecipeID > 0)
+{
+
+    <!--This is the search function-->
+    <h5>Add Ingredients</h5>
+    <table width="50%">
+        <tr>
+            <th width="10px"></th>
+            <th>Enter an ingredient name and click the Search button to select an ingredient.</th>
+        </tr>
+        <tr>
+            <td style="font-weight:bold;" align="right"></td>
+            <td style="padding:0;">
+                <input id="txtIngredientSearch" tabindex="1" @bind="@ingrSearch" type="text" style="width:500px; background-color:rgb(255, 249, 132)" placeholder="Enter up to four keywords to search" />
+                <input id="btnSearchIngredients" tabindex="2" @onclick="@SearchIngredients" type="button" value="Search" />
+            </td>
+        </tr>
+    </table>
+    <!-- There must be ingredients to display -->
+
+    @if (ingredientSearchCount > 0)
+    {
+        <table>
+            <tr>
+                <td></td>
+                <td style="padding:0;">
+                    @if (SelectedIngredientService.IngredientID == 0)
+                    {
+                        <select id="selectIngredient" tabindex="3" @bind="@SelectedIngredientService.IngredientID" style="width:500px; overflow:scroll" size="10">
+                            <option value="0">Please select from the ingredients matching @ingrSearch</option>
+                            @foreach (var list in filteredIngredients)
+                            {
+                                <option value="@list.IngredientID"
+                                        @onblur="@(() => { SelectedIngredientService.IngredientID = list.IngredientID; })"
+                                        @onclick="@listChange">
+                                    @list.IngredientName
+                                </option>
+                            }
+                        </select>
+                    }
+                </td>
+            </tr>
+        </table>
+    }
+    <!--Upon a successful search, the ingredient meta data can be input by the user -->
+    @if (SelectedIngredientService.IngredientID > 0)
+    {
+        <div style="padding-left:20px"><b>@selectedIngredientName</b></div>
+        <div style="font-size:16px"></div>
+        <table>
+            <tr>
+                <td align="right" style=" padding:0;">Qty:</td>
+                <td style="padding:0;">
+                    <input id="numQty" @bind="@ingredientQty" type="number" step="any" min="0.01" max="20000" style="width:60px; border-width: 0; background-color:rgb(255, 249, 132);" tabindex="4" />
+                </td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0">UoM:</td>
+                <td>
+                    <select name="uomSelect" id="selUOM" @bind="@uom" tabindex="5" style="border-width: 0; background-color:rgb(255, 249, 132);">
+                        <option value="0">Choose one...</option>
+                        @foreach (var list in uomList)
+                        {
+                            <option value=@list.UomID>@list.UomDesc</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right" style=" padding:0">Info:</td>
+                <td>
+                    <input id="txtIngrCondition" @bind="@ingrCondition" type="text" tabindex="6" style="border-width: 0; background-color:rgb(255, 249, 132);" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+
+<!-- If the Qty has been added by the user, the Add Ingredient button will appear. -->
+@if (ingredientQty > 0 && uom > 0 && SelectedIngredientService.IngredientID > 0)
+{
+    <table>
+        <tr style="font-size:14px">
+            <td><input id="btnAddIngredient" @onclick="@addIngredient" type="button" value="Add Ingredient" tabindex="7" style="font-size:14px" /></td>
+        </tr>
+    </table>
+}
+<!--If the quantity exceeds the alloted value, the user is warned. -->
+@if (errmsg.Length > 0)
+{
+    <div style="width:20px; word-wrap:break-word; background-color:lightpink; text-align:center">@errmsg</div>
+}
+<!--If the searched item cannot be found, a message appears. -->
+@if (searchUnsuccessful.Length > 0)
+{
+    <table>
+        <tr>
+            <td width="10%"></td>
+            <td width="50%" align="center" style="background-color:lightpink">@searchUnsuccessful</td>
+            <td width="40%"></td>
+        </tr>
+    </table>
+}
+
+
+
+@code {
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+
+    private Recipe recipe = new Recipe();
+    private List<Ingredient> filteredIngredients = new List<Ingredient>();
+    private List<Ingredient> ingredients;
+    private int selectedIngredientID;
+    private string selectedIngredientName = "";
+    private int ingredientSearchCount;
+    private string searchUnsuccessful = "";
+    private int recipeIngredientCount = 0;
+    private int ingredientID;
+    private Ingredient ingredient = new Ingredient();
+    private List<RecipeIngredient> recipeIngredients;
+
+    //user criteria for searching ingredients
+    //private string ingrSearch = "Enter up to four keywords to search";
+    private string ingrSearch = "";
+
+    //private int ingredientID;
+    private decimal ingredientQty;
+    private int uom;
+    private string ingrCondition = "";
+    //private int testIngredientID;
+    private List<Uom> uomList = new List<Uom>();
+    private bool onclickMe = false;
+    private string errmsg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+
+        recipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
+
+        var uomRepo = repoFactory.Get<PMC.Data.UomRepo>();
+        var uomlist = uomRepo.GetUomList().ToList();
+        uomList = uomlist;
+
+        SelectedIngredientService.IngredientID = 0;
+
+    }
+
+    protected async void SearchIngredients()
+    {
+        var ingredientRepo = repoFactory.Get<PMC.Data.IngredientRepo>();
+        var ingrList = ingredientRepo.SearchIngredients(ingrSearch).ToList();
+        filteredIngredients = ingrList;
+        ingredientSearchCount = ingrList.Count() + 2;
+        searchUnsuccessful = "";
+        if (ingredientSearchCount == 0)
+        {
+            searchUnsuccessful = "We could not find an ingredient containing the word entered, please try a different word. If you have entered a plural word like 'eggs' change it to 'egg' and try again";
+        }
+        StateHasChanged();
+    }
+
+
+    //PMC1032-02 PMC1032-03 PMC1032-04 PMC1032-05 PMC1032-08 PMC1092-05 PMC1092-06 PMC1092-42
+    protected async void addIngredient()
+    {
+        checkIngredientInfo();
+        if (ingredientQty <= 20000)
+        {
+            var recipeIngredientRepo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+            var ingredientInserted = recipeIngredientRepo.InsertIngredientByRecipeID(SelectedRecipeService.RecipeID, SelectedIngredientService.IngredientID, ingrCondition, ingredientQty, uom, userID);
+            var ingredientRepo = repoFactory.Get<PMC.Data.IngredientRepo>();
+            var recipeRepo = repoFactory.Get<PMC.Data.RecipeRepo>();
+            recipe = recipeRepo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
+
+            var currRecipeIngredients = recipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
+            recipeIngredients = currRecipeIngredients.ToList();
+            recipeIngredientCount = recipeIngredients.Count();
+
+            var ingrList = recipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
+            SelectedIngredientService.IngredientCount = ingrList.Count();
+
+            //SelectedIngredientService.IngredientCount = recipeIngredientCount;
+            SelectedIngredientService.OnChange += StateHasChanged;
+
+            //call method that resets the fields so user can search for another ingredient
+            refreshIngredientSearch();
+            StateHasChanged();
+            NavManager.NavigateTo(HomeURIService.homeUri + "recipeingredientlist");
+            NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        }
+    }
+
+    //when an ingredient is selected this method is called.
+    public void listChange()
+    {
+        errmsg = "";
+        onclickMe = true;
+        var repo = repoFactory.Get<PMC.Data.IngredientRepo>();
+        ingredient = repo.GetIngredientByIngredientID(SelectedIngredientService.IngredientID);
+        selectedIngredientName = ingredient.IngredientName;
+        SelectedIngredientService.OnChange += StateHasChanged;
+        StateHasChanged();
+    }
+
+    //resets the fields so user can search for another ingredient
+    protected async void refreshIngredientSearch()
+    {
+
+        //ingrSearch = "Enter up to four keywords to search";
+        ingredientSearchCount = 0;
+        selectedIngredientName = "";
+        SelectedIngredientService.IngredientID = 0;
+        SelectedIngredientService.OnChange += StateHasChanged;
+        ingredientQty = 0;
+        uom = 0;
+        ingrCondition = "";
+        searchUnsuccessful = "";
+        StateHasChanged();
+    }
+
+    //Checks ingredient quantity and updates 
+    private void checkIngredientInfo()
+    {
+        if (ingredientQty > 20000)
+        {
+            errmsg = "The quantity cannot be greater than 20,001. Please update the quantity to a value less than 20,001.";
+        }
+    }
+
+}

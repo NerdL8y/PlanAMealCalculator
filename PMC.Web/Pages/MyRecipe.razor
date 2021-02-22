@@ -1,0 +1,114 @@
+﻿@page "/myrecipe"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedIngredientService SelectedIngredientService
+@inject SelectedInstructionService SelectedInstructionService
+@inject HomeURIService HomeURIService
+@inject NavigationManager NavManager
+
+@if (SelectedRecipeService.RecipeID == 0)
+{
+    <p><em>A recipe has not been selected.  Select My Recipe List in the Navigation area, you must select a recipe from there first.  </em></p>
+}
+
+@if (SelectedRecipeService.RecipeID > 0)
+{
+   <h3 style="padding-bottom:2px">@recipe.RcpName</h3>
+    
+    <div class="column">
+        <div class="columnNext"><b>Servings</b></div>
+        <div class="columnNext"><b>Cook Method</b></div>
+        <div class="columnNext"><b>Total Recipe Time</b></div>
+    </div>
+    <div class="column">
+        <div class="columnNext" style="padding-left:5px">@recipe.RcpServingsQty</div>
+        <div class="columnNext" style="padding-left:5px">@recipe.CookMethodDesc</div>
+        <div class="columnNext" style="padding-left:5px">@recipe.RecipeTotalPrepTime.ToString("0.0") hours</div>
+    </div>
+    <hr style="padding-bottom:1px; padding-top:1px" />
+}
+<dir style="font-size:11px; text-align:center;  padding:0px" ><em>Use the <b>Add Ingredients</b> and/or <b>Add Instructions</b> area at the bottom of the page to modify the recipe.</em></dir>
+    <div class="grid-help">
+        <div class="grid-help-1">
+            <RecipeIngredientList></RecipeIngredientList>
+            @if (SelectedIngredientService.IngredientCount != 0)
+            {
+                <h5 style="text-align:center"><b>Ingredients</b></h5>
+                <RecipeIngredientList></RecipeIngredientList>
+            }
+        </div>
+        <div class="grid-help-2"><RecipeInstructionList></RecipeInstructionList>
+            @if (SelectedInstructionService.InstructionCount != 0)
+            {
+                <h5 style="text-align:center"><b>Instructions</b></h5>
+                <RecipeInstructionList></RecipeInstructionList>
+                <br />
+            }
+        </div>
+    </div>
+    <hr />
+    <div class="grid-help">
+        <div class="grid-help-1"><AddIngredient></AddIngredient></div>
+        <div class="grid-help-2"><AddInstruction></AddInstruction></div>
+    </div>
+    <br /><br />
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+
+    private Recipe recipe = new Recipe();
+    private string currentRecipeName;
+    private bool validRecipeName = false;
+
+    private string originalRecipeName = "";
+
+    //PMC1092-33 PMC1092-04
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        SelectedInstructionService.InstructionCount = 0;
+        SelectedIngredientService.IngredientCount = 0;
+
+        if (SelectedRecipeService.RecipeID > 0)
+        {
+            StateHasChanged();
+            var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+            recipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
+            
+            //recipe = repo.GetRecipeByRecipeID(SelectedRecipeService.RecipeID);
+
+   
+            //checkIngredientCount();
+            //checkInstructionCount();
+
+            StateHasChanged();
+        }
+
+    }
+
+    private void checkIngredientCount()
+    {
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        var ingrCount = repo.GetRecipeIngredientCountByRecipeID(SelectedRecipeService.RecipeID);
+        SelectedIngredientService.IngredientCount = ingrCount.RecipeIngredientCount;
+        SelectedIngredientService.OnChange += StateHasChanged;
+    }
+
+    private void checkInstructionCount()
+    {
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        var instCount = repo.GetRecipeInstructionCountByRecipeID(SelectedRecipeService.RecipeID);
+        SelectedInstructionService.InstructionCount = instCount.RecipeInstructionCount;
+        SelectedInstructionService.OnChange += StateHasChanged;
+    }
+
+
+
+
+}

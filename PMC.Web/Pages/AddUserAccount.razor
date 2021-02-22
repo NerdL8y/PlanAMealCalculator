@@ -1,0 +1,254 @@
+﻿@page "/adduseraccount"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject HomeURIService HomeURIService
+@inject NavigationManager NavManager
+@inject AppState AppState
+
+<h3>Create Your User Profile</h3>
+
+@if (validNewUserName == false || validNewEmail == false)
+{
+    <table>
+        <tr>
+            <td width="10%" align="right">
+                Email:
+            </td>
+            <td width="20%">
+                <input id="txtUserEmail" @bind="@userEmail" type="text" style="width:200px" autofocus />
+            </td>
+            <td width="10%"></td>
+            <td width="60%"></td>
+        </tr>
+        <tr>
+            <td width="10%" align="right">Username:</td>
+            <td width="20%"><input id="txtNewUserName" @bind="@userName" type="text" style="width:200px" /></td>
+            <td width="10%"><input id="btnCheckUserName" @onclick="CheckThisUserName" type="button" value="Check Availability" /></td>
+            <td width="60%"></td>
+        </tr>
+    </table>
+}
+
+@if (attemptedToCheckAvailability == true && validNewEmail == false)
+{
+
+    <meta HTTP-EQUIV="refresh" />
+    <p>@msgDuplicateEmail</p>
+}
+@if (attemptedToCheckAvailability == true && validNewUserName == false)
+{
+    <meta HTTP-EQUIV="refresh" />
+    <p>@msgDuplicateUser</p>
+}
+
+
+
+@if (validNewUserName == true && validNewEmail == true)
+{
+    <table>
+        <tr>
+            <td style="font-size:14px">Please complete your profile information to continue.</td>
+        </tr>
+        <tr style="font-size:14px; width:15%">Email: @userEmail</tr>
+        <tr style="font-size:14px; width:15%">Username: @userName</tr>
+        <tr width:30%"></tr>
+    </table>
+    <table>
+        <tr>
+            <td width="25%"># in Family:</td>
+            <td width="25%"><input id="numNumFamily" @bind="@userNumFamMembers" type="number" autofocus /></td>
+            <td width="50%"></td>
+        </tr>
+        <tr>
+            <td width="25%">First Name:</td>
+            <td width="25%"><input id="txtUserFirstName" @bind="@userFirstName" type="text" /></td>
+            <td width="50%"></td>
+        </tr>
+        <tr>
+            <td width="25%">Last Name:</td>
+            <td width="25%"><input id="txtUserLastName" @bind="@userLastName" type="text" /></td>
+            <td width="50%"></td>
+        </tr>
+        <tr>
+            <td width="25%">State:</td>
+            <td width="25%"><input id="txtNewState" @bind="@userState" type="text" style="text-transform:uppercase" /></td>
+            <td width="50%"></td>
+        </tr>
+        <tr>
+            <td width="25%">Password:</td>
+            <td width="25%"><input id="txtNewPassword" @bind="@userPassword" type="password" /></td>
+            <td width="50%"></td>
+        </tr>
+        <tr>
+            <td width="25%">Verify Password:</td>
+            <td width="25%"><input id="txtComparePassword" @bind="@userPasswordCompare" type="password" /></td>
+            <td width="50%"></td>
+        </tr>
+        <tr>
+            <td width="25%"><br /><input id="btnAddUserProfile" @onclick="CheckPassword" type="button" value="Create My Profile" /></td>
+            <td width="50%"></td>
+        </tr>
+    </table>
+    @if (attemptedToAddAccount == true && userPassword != userPasswordCompare)
+    {
+        <table>
+            <tr class="table-warning">The password does not match, please make sure the passwords match, then try again.</tr>
+        </table>
+    }
+
+}
+
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+
+    protected string userName;
+    protected string userPassword = "";
+    protected string userPasswordCompare = "";
+    protected string userFirstName;
+    protected string userLastName;
+    protected string userState = "";
+    //set default value to 1
+    protected int userNumFamMembers = 1;
+    protected string userEmail;
+    //all new accounts are User role which is 3 PMC1023-02 provides guest permissions 
+    //PMC1023-03 there are zero methods for adding a user with admin permissions, admins have to be added manually to DB.
+    protected int userRole = 3;
+    protected string authMessage;
+    protected string checkUserName;
+    protected bool validNewUserName = false;
+    protected bool validNewEmail = false;
+    protected string invalidLogin = "";
+
+    protected int unresponse;
+    protected bool attemptedToAddAccount = false;
+    protected bool attemptedToCheckAvailability = false;
+    protected string msgDuplicateEmail = "";
+    protected string msgDuplicateUser = "";
+    protected string what = "InitialValue";
+    static readonly HttpClient client = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+        repoFactory.Get<PMC.Data.UserRepo>();
+    }
+
+    protected async void CheckPassword()
+    {
+        attemptedToAddAccount = true;
+        if (userPassword == userPasswordCompare)
+        {
+            CreateUserAccount();
+            AppState.LoggedIn = true;
+            NavManager.NavigateTo(HomeURIService.homeUri + "plannedmeals");
+        }
+
+        StateHasChanged();
+    }
+
+    //PMC1092-25 PMC1092-38 PMC1093-06 
+    protected async void CreateUserAccount()
+    {
+        var repo = repoFactory.Get<PMC.Data.UserRepo>();
+        byte[] password = System.Text.ASCIIEncoding.ASCII.GetBytes(userPassword);
+
+        try
+        {
+            repo.InsertUserAccount(userName, userFirstName, userLastName, userState, userNumFamMembers, userEmail, password, userRole);
+            Authenticate();
+        }
+        catch
+        {
+            authMessage = "The user profile could not be created";
+        }
+        StateHasChanged();
+
+    }
+
+    public async void CheckThisUserName()
+    {
+        var repo = repoFactory.Get<PMC.Data.UserRepo>();
+        var checkResponse = repo.CheckUserName(userName);
+
+        CheckEmailAddress(userEmail);
+        if (validNewEmail == true)
+        {
+            attemptedToCheckAvailability = true;
+            //if the username does NOT exist, then checkResponse will be null
+            //therefore the username is good to use
+            if (checkResponse.UserCount == 0)
+            {
+                validNewUserName = true;
+            }
+            //if the username does exist, then checkResponse will be 1
+            //therefore the username is NOT good to use,
+            if (checkResponse.UserCount != 0)
+            {
+                validNewUserName = false;
+                msgDuplicateUser = "The username " + userName + " is not available. Please try a different username.";
+            }
+        }
+        StateHasChanged();
+
+    }
+    public async void CheckEmailAddress(string userEmail)
+    {
+
+
+        var repo = repoFactory.Get<PMC.Data.UserRepo>();
+        var checkResponse = repo.CheckEmailAddress(userEmail);
+
+        //if the email address is NOT found in the DB, then checkResponse == null and the email is good to use
+        if (checkResponse.EmailCount == 0)
+        {
+            attemptedToCheckAvailability = true;
+            validNewEmail = true;
+        }
+        //if the email address is found in the DB, then checkResponse == 1 and the email is NOT good to use
+        if (checkResponse.EmailCount != 0)
+        {
+            attemptedToCheckAvailability = true;
+            validNewEmail = false;
+            msgDuplicateEmail = "An account with this email already exists. Please log into your existing account or contact PMC at PMC@PMC.COM to have your password reset.";
+        }
+        StateHasChanged();
+    }
+
+    //using Login as the method name causes it to be the same as the class name and that is not acceptable
+    public async void Authenticate()
+    {
+        AppState.LoggedIn = false;
+        client.BaseAddress = new Uri(HomeURIService.homeUri);
+        var repo = repoFactory.Get<PMC.Data.SessionInfoRepo>();
+        var results = repo.Authenticate(userName, userPassword);
+
+        if (results != null)
+        {
+
+            repoFactory.SessionId = results.SsID;
+            repoFactory.UserID = results.UserID;
+            HttpResponseMessage response = await client.GetAsync(HomeURIService.homeUri);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            AppState.LoggedIn = true;
+
+            NavManager.NavigateTo(HomeURIService.homeUri + "help");
+
+        }
+
+        if (repoFactory.UserID == 0)
+        {
+            AppState.LoggedIn = false;
+            invalidLogin = "Invalid Username or Password, please try again.";
+        }
+
+
+
+    }
+
+
+}

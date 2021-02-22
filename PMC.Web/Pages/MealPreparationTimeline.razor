@@ -1,0 +1,137 @@
+﻿@page "/mymealpreptimeline"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject SelectedMealService SelectedMealService
+<!--this page is DONE for now-->
+
+@if (SelectedMealService.MealID == 0)
+{
+    <p>
+        <em>
+            A meal has not been selected.  Select My Meal List in the Navigation area, you must select a Meal from there first. <br />
+        </em>
+    </p>
+}
+
+@if (SelectedMealService.MealID > 0)
+{
+    <h4>@meal.MealName</h4>
+    <!--This section displays the Meal information-->
+    <table style="font-size:16px">
+        <tr>
+            <th width="10%">Type</th>
+            <th width="10%">Date</th>
+            <th width="20%">Serving Time</th>
+            <th width="20%">Start No Later Than</th>
+            <th># of Preparers</th>
+        </tr>
+        <tr>
+            <td width="10%">@meal.MealTypeDesc</td>
+            <td width="10%">@meal.MealDate.ToString("MMM d")</td>
+            <td width="20%">@meal.ServeTime.ToShortTimeString() </td>
+            <td width="20%">@meal.MealStartPrepNLT.ToString("MMM d @ hh:mm")</td>
+            <td>@meal.NumPreparers</td>
+        </tr>
+    </table>
+    <hr />
+    <h5><b>Ingredients</b></h5>
+    <!--This section displays the Ingredients information-->
+    @foreach (var listRecipes in recipeList)
+    {
+        <h6>@listRecipes.RecipeName</h6>
+        <table class="meals">
+            <tr>
+                <th width="5%" style="text-align:right; padding-right:10px">Qty</th>
+                <th width="10%" style="padding-left:5px">UoM</th>
+                <th width="85%" style="padding-left:5px">Ingredient</th>
+            </tr>
+            @foreach (var list in recipeIngredientsList)
+            {
+                if (list._riRecipeID == listRecipes._riRecipeID)
+                {
+
+                    <tr height="5px">
+                        <td width="5%" style="text-align:right; padding-right:10px">@list.IngredientQty.ToString("0.00")</td>
+                        <td width="10%" style="padding-left:5px">@list.UomDesc</td>
+                        <td width="85%" style="padding-left:10px">@list.IngredientName @list.IngredientCondition</td>
+                    </tr>
+                }
+            }
+            <br />
+        </table>
+    }
+
+    <!--This section displays the Instruction information-->
+    <h5><b>Instructions</b></h5>
+    @foreach (var dayList in instructions)
+    {
+        <h6>Begin preparation on <b> @dayList.StartStepDay.ToString("dddd, MMM dd")</b> </h6>
+        <table class="meals">
+            <tr style="border:solid; border-width:.5px; border-color:#ddd">
+                <th width="5%" style="text-align:right; border-right:0px ">Start</th>
+                <th width="7%" style="text-align:right; border-right:0px;border-left:0px">Duration</th>
+                <th width="3%" style="border-right:0px;border-left:0px">UoT</th>
+                <th width="65%" style="border-right:0px;border-left:0px">Instruction</th>
+                <th width="20%" style="border-left:0px;">Recipe</th>
+            </tr>
+            @foreach (var list in meal.MealInstructions)
+            {
+                if (list.StartStepDay == dayList.StartStepDay)
+                {
+                    <tr height="10px" style="border:solid; border-width:.5px; border-color:#ddd">
+                        <td align="right">@list.StepStartTime.ToShortTimeString()</td>
+                        <td align="right">@list.InstructionEstTime</td>
+                        <td style="padding-left:5px">@list.UotDesc</td>
+                        <td style="padding-left:10px">@list.InstDescription</td>
+                        <td style="color:slategray; padding-left:10px">@list.RecipeName</td>
+                    </tr>
+                }
+            }
+            <br />
+        </table>
+    }
+
+}
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private Meal meal = new Meal();
+    private List<Instruction> instructions = new List<Instruction>();
+    private List<RecipeIngredient> recipeList = new List<RecipeIngredient>();
+    private List<RecipeIngredient> recipeIngredientsList = new List<RecipeIngredient>();
+    private int userID;
+
+    //PMC1073-01 PMC1074-01 PMC1092-21 PMC1092-39 PMC1092-40 PMC1053-01
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+
+        if (SelectedMealService.MealID > 0)
+        {
+            var repo = repoFactory.Get<PMC.Data.MealRepo>();
+            meal = repo.GetMealPrepTimelineByMealID(SelectedMealService.MealID);
+
+            var repoInstruction = repoFactory.Get<PMC.Data.InstructionRepo>();
+            instructions = repoInstruction.GetPrepTimelineInstructionDatesByMealID(SelectedMealService.MealID).ToList();
+
+            var repoIngredient = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
+            var currRecipeList = repoIngredient.GetPrepTimelineIngredientsRecipeIDByMealID(SelectedMealService.MealID).ToList();
+            recipeList = currRecipeList;
+
+            var currIngredientList = repoIngredient.GetPrepTimelineIngredientsByMealID(SelectedMealService.MealID).ToList();
+            recipeIngredientsList = currIngredientList;
+
+            //var currRecipeIngredients = repoIngredient.Get
+
+
+
+
+        }
+
+    }
+
+}

@@ -1,0 +1,182 @@
+﻿@page "/addmyrecipe"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedIngredientService SelectedIngredientService
+@inject SelectedInstructionService SelectedInstructionService
+@inject NavigationManager NavManager   
+@inject HomeURIService HomeURIService
+
+<div align="right">
+    <button style=" font-size:14px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div align="left">
+        <BlazorModal Title="Recipe List" IsOpened="isOpened">
+            <ModalBody>
+                <div>Recipes are the building blocks of every meal. Once a recipe has been created, it can be used over and over.</div>
+                <div style="padding-bottom:0px">Below, add a <b>Recipe Name</b>, the number of <b>Servings</b>, then select a <b>Cook Method</b>.</div>
+                <div style="padding-top:0px">Provided everything is correct, click the <b>Add Recipe</b> button.</div>
+                <div>The <b>Add Ingredients</b> area will now appear.</div>
+                <div>To view the meaning of each <em>Cook Method</em>, select <b>Definitions</b> in the navigation area.</div>
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+
+
+@if (userID == 0)
+{
+    <p>You must log into your account before adding a recipe. </p>
+}
+@if (userID > 0 && SelectedRecipeService.RecipeID == 0)
+{
+    <!--This is the table to add a recipe-->
+
+    <table>
+        <tr>
+            <td><input id="txtRecipeName" @bind="@RecipeName" type="text" style="width:700px; height:30px" onclick="this.setSelectionRange(0, this.value.length)" maxlength="99" autofocus /></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td width="25%">
+                # Servings:
+                <input id="numRecipeServings" @bind="@RecipeServings" type="number" min="1" style="width:50px; height:30px" />
+            </td>
+            <td width="85%">
+                <select name="cookmethods" id="cookmethodid" @bind="@selectedCookMethod" style="width:300px; height:30px" >
+                    <option value="0">Select a Cook Method</option>
+                    @foreach (var list in cookmethod)
+                    {
+                        <option value="@list.CookMethodID" style="height:0px"
+                                @onchange="@(() => { selectedCookMethod = list.CookMethodID; })"
+                                >@list.CookMthdDesc</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @if (RecipeName != null && selectedCookMethod != 0 && SelectedRecipeService.RecipeID == 0)
+                {
+                    <input id="btnAddRecipe" @onclick="AddRecipe" type="button" value="Add Recipe" style="height:30px" />
+                }
+            </td>
+        </tr>
+    </table>
+}
+
+@if (validRecipeName == false)
+{
+    <p>@errorMsg</p>
+}
+
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+
+    private Recipe recipe = new Recipe();
+    public string RecipeName = "Enter Recipe Name";
+    public int RecipeServings = 1;
+    public bool validRecipeName;
+    public string errorMsg = "";
+
+    private List<CookMethod> cookmethod = new List<CookMethod>();
+    private List<Cookware> cookware = new List<Cookware>();
+    private int selectedCookMethod = 0;
+    private int selectedCookware = 1;
+    private bool readyAddInstruction = false;
+    private int cookMethodCount = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+
+        var cookmethodRepo = repoFactory.Get<PMC.Data.CookMethodRepo>();
+        var cmList = cookmethodRepo.GetCookMethods().ToList();
+        cookmethod = cmList;
+        cookMethodCount = cookmethod.Count + 3;
+        isOpened = false;
+        SelectedRecipeService.RecipeID = 0;
+        SelectedIngredientService.IngredientID = 0;
+
+    }
+
+    //PMC1032-01 PMC1034-01 PMC1092-03 
+    public async void AddRecipe()
+    {
+
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        CheckRecipeName();
+
+        if (validRecipeName == true)
+        {
+            //var currentRecipe = repo.InsertRecipeByUserID(userID, RecipeName, RecipeServings, selectedCookMethod, selectedCookware);
+            //recipe = currentRecipe;
+            //SelectedRecipeService.RecipeID = currentRecipe.RecipeID;
+            recipe = repo.InsertRecipeByUserID(userID, RecipeName, RecipeServings, selectedCookMethod, selectedCookware);
+            SelectedRecipeService.RecipeID = recipe.RecipeID;
+            SelectedRecipeService.OnChange += StateHasChanged;
+            SelectedIngredientService.IngredientCount = 0;
+            SelectedInstructionService.InstructionCount = 0;
+            NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        }
+        else
+        {
+            errorMsg = "A recipe with this name already exists.  Please try a new name or use the navigation area to view your Recipe List.";
+        }
+        isOpened = false;
+        //selectedCookMethod = 0;
+        StateHasChanged();
+        //NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+    }
+
+    protected async void CheckRecipeName()
+    {
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        var recipeName = repo.CheckRecipeNameByUserID(RecipeName, userID);
+        if (recipeName.RecipeNameCount == 0)
+        {
+            validRecipeName = true;
+        }
+        if (recipeName.RecipeNameCount != 0)
+        {
+            validRecipeName = false;
+        }
+        isOpened = false;
+        //selectedCookMethod = 0;
+        StateHasChanged();
+    }
+
+    protected async void DisplayInstructionArea()
+    {
+        isOpened = false;
+        readyAddInstruction = true;
+        StateHasChanged();
+    }
+
+    bool isOpened = false;
+    void OpenModal()
+    {
+        isOpened = true;
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+
+    private void recipeComplete()
+    {
+        SelectedRecipeService.RecipeID = 0;
+        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipelist");
+    }
+
+}

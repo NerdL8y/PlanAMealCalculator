@@ -1,0 +1,92 @@
+﻿@page "/myprofile"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+
+@if (userID == 0)
+{
+    <p><em>Please Login</em></p>
+}
+
+@if (userID != 0)
+{
+    <h4><b>@currentUserName User Profile</b></h4>
+    <div class="grid-container">
+        <div class="grid-item grid-item-1">
+            <table style="font-size:16px; " >
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td align="right" style="border: solid; border-width: .5px; border-color: #ddd"><b>Username:</b></td>
+                    <td style="padding-left:5px; border:solid; border-width:.5px; border-color:#ddd ">@user.UserName</td>
+                </tr>
+                <tr>
+                    <td align="right" style="border: solid; border-width: .5px; border-color: #ddd"><b>First:</b></td>
+                    <td style="padding-left:5px; border:solid; border-width:.5px; border-color:#ddd">@user.UserFirstName</td>
+                </tr>
+                <tr>
+                    <td align="right" style="border: solid; border-width: .5px; border-color: #ddd"><b>Last:</b></td>
+                    <td style="padding-left:5px; border:solid; border-width:.5px; border-color:#ddd">@user.UserLastName</td>
+                </tr>
+                <tr>
+                    <td align="right" style="border: solid; border-width: .5px; border-color: #ddd"><b>State:</b></td>
+                    <td style="text-transform:uppercase; padding-left:5px; font-size:14px; border:solid; border-width:.5px; border-color:#ddd">@user.UserState</td>
+                </tr>
+                <tr>
+                    <td align="right" style=" border: solid; border-width: .5px; border-color: #ddd"><b>Email:</b></td>
+                    <td style="padding-left:5px; border:solid; border-width:.5px; border-color:#ddd" class="emailDisplay">@user.UserEmail</td>
+                </tr>
+                <tr>
+                    <td align="right" style=" border: solid; border-width: .5px; border-color: #ddd"><b># in Family:</b></td>
+                    <td style="padding-left:5px; border:solid; border-width:.5px; border-color:#ddd">@user.UserNumFamMembers</td>
+                </tr>
+                <!--This if statement will display the button if the user wants to see help on start up.
+                    If the user already has help on start up turned on, this button will not be displayed-->
+                @if (userHelp == 0) { 
+                <tr>
+                    <td align="right">Show Help on start up?</td>
+                    <td style="padding-left:5px"><input type="button" value="Show Help" @onclick="@helpOnStartUp" style="border-width:0px" /></td>
+                </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private UserAccount user = new UserAccount();
+    private UserRepo userRepo;
+    private int userID;
+    private int userHelp;
+    private string currentUserName;
+
+    //PMC1092-38 
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+
+        if (userID != 0)
+        {
+            userRepo = repoFactory.Get<PMC.Data.UserRepo>();
+            user = userRepo.GetUserByUserID(userID);
+            userHelp = user.ShowHelpOnStartUp;
+            currentUserName = user.UserName + "'s";
+        }
+    }
+
+    protected void helpOnStartUp()
+    {
+        userRepo.SetUserShowHelpOnStartUp(userID);
+        NavManager.NavigateTo(HomeURIService.homeUri + "help");
+    }
+
+}

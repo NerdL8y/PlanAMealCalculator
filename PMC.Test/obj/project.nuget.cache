@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "mVoF5UZnNVce71Tr/Hq2NOXjqX5c/plk/+WzbOcsK/mt2EgbkC1fyOlhTkmKSKV33H30RSmtG/zYx+vvRQJlWQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Debora\\source\\repos\\PMC\\PMC.Test\\PMC.Test.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Debora\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.2\\microsoft.aspnetcore.app.ref.3.1.2.nupkg.sha512"
+  ],
+  "logs": []
+}

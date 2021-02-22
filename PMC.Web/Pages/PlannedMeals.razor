@@ -1,0 +1,158 @@
+﻿@page "/plannedmeals"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+@inject SelectedMealService SelectedMealService
+@inject AppState AppState
+<!--This page is DONE-->
+<div align="right">
+    <button style=" font-size:14px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div align="left">
+        <BlazorModal Title="Planned Meals" IsOpened="isOpened">
+            <ModalBody>
+                <div>This is your list of your planned meals as of today and looking into the future.<br />To add another meal, click the <b>Add a Meal</b> button in the navigation area.</div>
+                <div style="padding-top:5px">To see all of your meals, regardless of the scheduled date, select <b>Meal List</b> from the navigation area.</div>
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+<h3>Planned Meals</h3>
+@if (SelectedMealService.MealCount == 0)
+{
+    <table style="font-size:16px">
+        <tr>
+            <th>Welcome to the PMC site!</th>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>It appears you do not have any meals planned today or into the future. To see a list of all your planned meals, select the <b>Meal List</b> from the navigation area. </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>You an also use the navigation area on the left to</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td width="2%"></td>
+            <td width="98%">Add a Recipe</td>
+        </tr>
+        <tr>
+            <td width="2%"></td>
+            <td width="98%">Add a Component</td>
+        </tr>
+        <tr>
+            <td width="2%"></td>
+            <td width="98%">Add a Meal</td>
+        </tr>
+        <tr>
+            <td width="2%"></td>
+            <td width="98%">Choose from any of the Lists</td>
+        </tr>
+        <tr>
+            <td width="2%"></td>
+            <td width="98%">Select Help for instructions.</td>
+        </tr>
+
+
+    </table>
+}
+@if (SelectedMealService.MealCount > 0 && userID > 0)
+{
+    
+    <table class="display-rows" >
+        <tr class="meals">
+            <th width="100px" style="text-align:center; vertical-align:middle">Meal Date</th>
+            <th width="675px" style="text-align:left; vertical-align:middle">Meal Name</th>
+            <th width="100px" style="text-align:center; vertical-align:middle">Meal Type</th>
+            <th width="100px" style="text-align:right; vertical-align:middle">Serve Time</th>
+            <th width="125px" style="text-align:right; vertical-align:middle">Start Prep</th>
+            <th width="75px" style="text-align:center; vertical-align:middle"># Guests</th>
+            <th style="text-align:center; vertical-align:middle">View</th>
+        </tr>
+        @foreach (var list in plannedMealList)
+        {
+            <tr>
+                <td width="100px" align="center">@list.MealDate.ToString("MMM dd")</td>
+                <td width="675px" style="padding-left:10px">@list.MealName</td>
+                <td width="100px" align="center">@list.MealTypeDesc</td>
+                <td width="100px" align="right" style="padding-right:10px">@list.ServeTime.ToShortTimeString()</td>
+                <td width="125px" align="right" style="padding-right:5px">
+                    @if (@list.MealDate.ToShortDateString() != @list.MealStartPrepNLT.ToShortDateString())
+                    {
+                       @list.MealStartPrepNLT.ToString("MMM dd");
+                    }
+                     @list.MealStartPrepNLT.ToShortTimeString()
+                </td>
+                <td width="75px" align="center" style="padding-right:5px">@list.MealGuests</td>
+                <td style="text-align:center; vertical-align:middle; padding-bottom:0px;">
+                    <label>
+                        <input name="choiceMealID" type="radio" tabindex="-1" 
+                               value="@list.MealID"
+                               @onchange="@(() => { SelectedMealService.MealID = list.MealID; })"
+                               @oninput="@mealSelect">
+                    </label>
+                </td>
+            </tr>
+        }
+        <hr />
+    </table>
+    <br />
+
+}
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+
+    private List<Meal> plannedMealList = new List<Meal>();
+    private int userID;
+    private int mealID;
+    protected int MealID { get { return mealID; } set { mealID = value; SelectedMealService.MealID = value; } }
+    private int mealCount;
+    private string tempMealDate = "";
+    private string tempStartDate = "";
+
+    //PMC1052-01 PMC1052-05 PMC1055-01 PMC1055-02 PMC1092-17
+    protected override async Task OnInitializedAsync()
+    {
+
+        userID = repoFactory.UserID;
+
+        var repo = repoFactory.Get<PMC.Data.MealRepo>();
+        var meals = repo.GetPlannedMealsByUserID(userID).ToList();
+        plannedMealList = meals.ToList();
+        SelectedMealService.MealCount = plannedMealList.Count();
+    }
+
+    protected void setMealID(int id)
+    {
+        SelectedMealService.MealID = id;
+        StateHasChanged();
+        isOpened = false;
+    }
+
+    protected void mealSelect(ChangeEventArgs e)
+    {
+        isOpened = false;
+        NavManager.NavigateTo(HomeURIService.homeUri + "mymeal");
+        StateHasChanged();
+    }
+
+    bool isOpened = false;
+    void OpenModal()
+    {
+        isOpened = true;
+
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+}

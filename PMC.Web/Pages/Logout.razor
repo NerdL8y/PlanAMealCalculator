@@ -1,0 +1,26 @@
+﻿@page "/logout"
+@using PMC.Data
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+@inject AppState AppState
+
+
+
+@code {
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+
+        var repo = repoFactory.Get<PMC.Data.SessionInfoRepo>();
+        var currRepo = repo.Logout(userID);
+        userID = 0;
+        AppState.LoggedIn = false;
+        NavManager.NavigateTo(HomeURIService.homeUri + "/");
+    }
+}

@@ -1,0 +1,160 @@
+﻿@page "/"
+@using PMC.Data
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedMealService SelectedMealService
+@inject SelectedComponentService SelectedComponentService
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+@inject AppState AppState
+
+<div align="right">
+    <button style=" font-size:14px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div align="left">
+        <BlazorModal Title="Getting Started" IsOpened="isOpened">
+            <ModalBody>
+                <div>If you have already registered, enter your Username and Password, then click Login to access your account.</div>
+                <div>If you have not registered yet, click the <b>Register</b> button to get started.</div>
+                <div style="padding-left:10px">Yeah, about that, you must have an account to continue. However, no need to fret, your information will never be shared with, nor sold to, any third parties.  After all, this is a school project and not yet meant for the real world.</div>
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+@if (invalidLogin.Length > 0)
+{
+    <div style="color:red; background:yellow; width:30%"> @invalidLogin</div>
+}
+
+@if (repoFactory == null || !repoFactory.HasSession || AppState.LoggedIn == false)
+{
+    <!--TODO why does Username lose focus when autofocus is set-->
+    <div style="font-size:30px; padding-bottom:30px"><h2>Welcome to the Plan a Meal Calculator (PMC)</h2></div>
+    <div class="grid-quarter">
+        <div class="grid-quarter-1">
+            <div><img src="@lizpic" style="height:300px; width:197px; border-radius:20px; " alt="Food"  /></div>
+            <div>© Photos by <a href="https://www.srphotosbyliz.com/" target="_blank">Elizabeth Henry</a></div>
+        </div>
+        <div class="grid-quarter-2">
+            <div style="font-size:18px;"><b>Login</b></div>
+            <div>Username</div>
+            <div><input id="txtUserName" style="border-width: 0; background-color: rgb(233, 238, 252);" @bind="@userName" type="text" maxlength="50" /></div>
+            <div>Password</div>
+            <div><input id="txtPassword" style="border-width: 0; background-color: rgb(233, 238, 252);" @bind="@password" type="password" maxlength="50" /></div><br />
+            <div style="padding-left:50px"><input id="btnLogin" @onclick="Authenticate" type="button" value="Login" autofocus /></div>
+            <br />
+            <div>Haven't registered with PMC yet?<br />Click the <b>Register</b> button to register today.</div>
+            <div style="padding-left:50px"><input id="btnAddUser" @onclick="@goToAddUserAccount" type="button" value="Register" /></div>
+        </div>
+        <div class="grid-quarter-3"></div>
+        <div class="grid-quarter-4"></div>
+    </div>
+    <br />
+
+
+}
+
+
+@code{
+
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+
+    protected string userName;
+    protected string password;
+    protected string authMessage;
+    protected string passwordEntered;
+    protected string invalidLogin = "";
+    private int viewHelp;
+
+    private string lizpic = "LizCake.jpg";
+
+    static readonly HttpClient client = new HttpClient();
+
+
+
+    //PMC1092-16 PMC1092-02 PMC1092-11 PMC1092-12 PMC1092-14 PMC1092-16 PMC1094-01
+    public async void Authenticate()
+    {
+        AppState.LoggedIn = false;
+        if (client.BaseAddress == null)
+        {
+            client.BaseAddress = new Uri(HomeURIService.homeUri);
+        }
+
+        var repo = repoFactory.Get<PMC.Data.SessionInfoRepo>();
+        var results = repo.Authenticate(userName, password);
+
+        if (results != null)
+        {
+            repoFactory.SessionId = results.SsID;
+            repoFactory.UserID = results.UserID;
+            HttpResponseMessage response = await client.GetAsync(HomeURIService.homeUri);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            AppState.LoggedIn = true;
+            collectCounts();
+            DisplayHelp();
+        }
+
+        //if (repoFactory.UserID == 0)
+        if(results == null)
+        {
+            AppState.LoggedIn = false;
+            invalidLogin = "Invalid Username or Password, please try again.";
+            NavManager.NavigateTo(HomeURIService.homeUri + "/");
+        }
+
+
+    }
+
+    protected bool isOpened = false;
+    void OpenModal()
+    {
+        isOpened = true;
+
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+
+    protected void DisplayHelp()
+    {
+        var repo = repoFactory.Get<PMC.Data.UserRepo>();
+        var currUser = repo.GetUserByUserID(repoFactory.UserID);
+        viewHelp = currUser.ShowHelpOnStartUp;
+        if (viewHelp == 1)
+        {
+            isOpened = false;
+            NavManager.NavigateTo(HomeURIService.homeUri + "help");
+        }
+        if (viewHelp == 0)
+        {
+            isOpened = false;
+            NavManager.NavigateTo(HomeURIService.homeUri + "plannedmeals");
+        }
+    }
+
+    private void collectCounts()
+    {
+        var crepo = repoFactory.Get<PMC.Data.ComponentRepo>();
+        SelectedComponentService.ComponentCount = crepo.GetComponentsByUserID(repoFactory.UserID).Count();
+
+        var mrepo = repoFactory.Get<PMC.Data.MealRepo>();
+        SelectedMealService.MealCount = mrepo.GetMealsByUserID(repoFactory.UserID).Count();
+
+        var rrepo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        SelectedRecipeService.RecipeCount = rrepo.GetRecipesByUserID(repoFactory.UserID).Count();
+    }
+
+    protected void goToAddUserAccount()
+    {
+        NavManager.NavigateTo(HomeURIService.homeUri + "adduseraccount");
+    }
+
+
+}

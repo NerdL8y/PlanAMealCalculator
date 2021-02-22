@@ -1,0 +1,162 @@
+﻿@page "/mymeallist"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavManager
+@inject SelectedMealService SelectedMealService
+@inject HomeURIService HomeURIService
+
+<div align="right">
+    <button style=" font-size:14px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div align="left">
+        <BlazorModal Title="Your Meal List" IsOpened="isOpened">
+            <ModalBody>
+                <p>Your Meal List contains all of your meals. The meals are listed by the meal type, sorted by the meal name, and includes the serving date.</p>
+                <p>Click on a meal name to view the details of the meal.</p>
+                <p style="padding-left:10px">Once you have selected a meal, you will be able to select <b>My Meal Prep Timeline</b> to view the preparation timeline details.</p>
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+<h3>Meal List</h3>
+<!--This is close enough for now-->
+@if (mealList.Count() == 0)
+{
+    <p>We could not find any meals. If you are new to PMC, select <b>Help</b> in the navigation area for instructions on how to create a meal.</p>
+}
+@if (mealList.Count() > 0)
+{
+        
+<table class="display-rows">
+    <tr class="meals">
+        <th width="100px" style="text-align:center; vertical-align:middle">Meal Type</th>
+        <th width="675px" style="text-align:left; vertical-align:middle">Meal Name</th>
+        <th width="75px" style="text-align:center; vertical-align:middle"># Guests</th>
+        <th width="100px" style="text-align:center; vertical-align:middle">Date</th>
+        <th width="50px" style="text-align:center; vertical-align:middle">View</th>
+    </tr>
+    @foreach (var list in mealList)
+    {
+        <tr>
+
+            <td align="center">@list.MealTypeDesc</td>
+            <td style="padding-left:10px">@list.MealName</td>
+            <td align="center" style="padding-right:5px">@list.MealGuests</td>
+            <td align="center">@list.MealDate.ToString("MMM dd")</td>
+            <td style="text-align:center; vertical-align:middle; padding-bottom:0px;">
+                <label>
+                    <input name="choiceMealID" type="radio" tabindex="-1"
+                           value="@list.MealID"
+                           @onchange="@(() => { SelectedMealService.MealID = list.MealID; })"
+                           @oninput="@mealSelect">
+                </label>
+            </td>
+        </tr>
+    }
+</table>
+<br />
+}
+
+
+@code {
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+
+    private int userID;
+    private int mealID;
+    protected int MealID { get { return mealID; } set { mealID = value; SelectedMealService.MealID = value; } }
+    private int mealCount = 0;
+    private int mealTypeCount = 0;
+    private int totalDisplayRows;
+    private string currentUri;
+    private List<Meal> mealBreakfast = new List<Meal>();
+    private List<Meal> mealBrunch = new List<Meal>();
+    private List<Meal> mealLunch = new List<Meal>();
+    private List<Meal> mealDinner = new List<Meal>();
+    private List<Meal> mealTypes = new List<Meal>();
+    private List<Meal> mealList = new List<Meal>();
+    private int countBreakfast = 0;
+    private int countBrunch = 0;
+    private int countLunch = 0;
+    private int countDinner = 0;
+    private int breakfastMealType = 1;
+    private int brunchMealType = 2;
+    private int lunchMealType = 3;
+    private int dinnerMealType = 4;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        userID = repoFactory.UserID;
+
+        //Get Meal Info
+        var repo = repoFactory.Get<PMC.Data.MealRepo>();
+        mealList = repo.GetMealsByUserID(userID).ToList();
+        mealCount += mealList.Count();
+        getMeals();
+        //Get Meal Type info
+        var mtrepo = repoFactory.Get<PMC.Data.MealRepo>();
+        mealTypes = mtrepo.GetMealTypesForMealsByUserID(userID).ToList();
+        mealTypeCount = mealTypes.Count();
+
+        //total number of rows for displaying the meal list
+        totalDisplayRows = mealCount + mealTypeCount + 1;
+
+        //Reset the Selected Meal ID in case user clicks the Meal List link
+        SelectedMealService.MealID = 0;
+        //test stuff, may use in the future
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("mealID", out var _id))
+        {
+            mealID = Convert.ToInt32(_id);
+        }
+        var uri2 = NavManager.ToAbsoluteUri(NavManager.Uri);
+        //NavigationManager.NavigateTo("/mymeal");
+        currentUri = uri2.ToString();
+    }
+
+    private void getMeals()
+    {
+        var repo = repoFactory.Get<PMC.Data.MealRepo>();
+        var typeOne = repo.GetMealsByMealTypeIDUserID(breakfastMealType, userID);
+        mealBreakfast = typeOne.ToList();
+        countBreakfast = mealBreakfast.Count() + 3;
+
+        var typeTwo = repo.GetMealsByMealTypeIDUserID(brunchMealType, userID);
+        mealBrunch = typeTwo.ToList();
+        countBrunch = mealBrunch.Count() + 3;
+
+        var typeThree = repo.GetMealsByMealTypeIDUserID(lunchMealType, userID);
+        mealLunch = typeThree.ToList();
+        countLunch = mealLunch.Count() + 3;
+
+        var typeFour = repo.GetMealsByMealTypeIDUserID(dinnerMealType, userID);
+        mealDinner = typeFour.ToList();
+        countDinner = mealDinner.Count() + 3;
+    }
+
+    protected void mealSelect(ChangeEventArgs e)
+    {
+        isOpened = false;
+        NavManager.NavigateTo(HomeURIService.homeUri + "mymeal");
+        StateHasChanged();
+    }
+
+    protected bool isOpened = false;
+    void OpenModal()
+    {
+        isOpened = true;
+
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+
+
+}
+
+

@@ -1,0 +1,163 @@
+﻿@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject SelectedMealService SelectedMealService
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedComponentService SelectedComponentService
+@inject AppState AppState
+@implements IDisposable
+<!--TODO indent this list properly-->
+<!--PMC1092-15 -->
+<div class="top-row pl-4 navbar navbar-dark" >
+    <a class="navbar-brand" href="" style="font-size:18px; vertical-align:middle; text-align:center; ">Plan a Meal Calculator</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-sm-column">
+        @if (AppState.LoggedIn == false)
+        {
+            <li class="nav-item px-sm-2">
+                <NavLink class="nav-link" href="/">
+                    <span class="oi oi-account-login" aria-hidden="true"></span>Log In
+                </NavLink>
+            </li>
+        }
+        @if (AppState.LoggedIn == true)
+        {
+            <li class="nav-item px-sm-2">
+                <NavLink class="nav-link" href="logout">
+                    <span class="oi oi-account-logout" aria-hidden="true"></span>Log Out
+                </NavLink>
+            </li>
+            <li class="nav-item px-sm-2">
+                <NavLink class="nav-link" href="myprofile">
+                    <span class="oi oi-person" aria-hidden="true"></span>My Profile
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="plannedmeals">
+                    <span class="oi oi-home" aria-hidden="true"></span>Planned Meals
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="mymeallist">
+                    <span class="oi oi-list" aria-hidden="true"></span>Meal List
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="mycomponentlist">
+                    <span class="oi oi-list" aria-hidden="true"></span>Component List
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="myrecipelist">
+                    <span class="oi oi-list" aria-hidden="true"></span>Recipe List
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="myshoppinglist">
+                    <span class="oi oi-list" aria-hidden="true"></span>Shopping List
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="addmyrecipe">
+                    <span class="oi oi-plus" aria-hidden="true"></span>Add a Recipe
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="addmycomponent">
+                    <span class="oi oi-plus" aria-hidden="true"></span>Add a Component
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="addmymeal">
+                    <span class="oi oi-plus" aria-hidden="true"></span>Add a Meal
+                </NavLink>
+            </li>
+            @if (SelectedMealService.MealID != 0)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="mymeal">
+                        <span class="oi oi-fork" aria-hidden="true"></span>My Meal
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="mymealpreptimeline">
+                        <span class="oi oi-clock" aria-hidden="true"></span>My Meal Prep Timeline
+                    </NavLink>
+                </li>
+            }
+            @if (SelectedComponentService.ComponentID != 0)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="mycomponent">
+                        <span class="oi oi-menu" aria-hidden="true"></span>My Component
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="mycomponent1">
+                        <span class="oi oi-menu" aria-hidden="true"></span>My Component 1
+                    </NavLink>
+                </li>
+            }
+
+            @if (SelectedRecipeService.RecipeID != 0)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="myrecipe">
+                        <span class="oi oi-menu" aria-hidden="true"></span>My Recipe
+                    </NavLink>
+                </li>
+            }
+
+            <li class="nav-item px-sm-2">
+                <NavLink class="nav-link" href="/help">
+                    <span class="oi oi-wrench" aria-hidden="true"></span>Help
+                </NavLink>
+            </li>
+        }
+        <li class="nav-item px-sm-2">
+            <NavLink class="nav-link" href="about">
+                <span class="oi oi-bookmark" aria-hidden="true"></span>About PMC
+            </NavLink>
+        </li>
+        <li class="nav-item px-sm-2">
+            <NavLink class="nav-link" href="terms">
+                <span class="oi oi-lightbulb" aria-hidden="true"></span>Definitions
+            </NavLink>
+        </li>
+
+    </ul>
+</div>
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private bool collapseNavMenu = true;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string pmcImage = "PMC_Logo_trnsprnt.png";
+
+    protected override async Task OnInitializedAsync()
+    {
+        AppState.OnChange += StateHasChanged;
+        SelectedMealService.OnChange += StateHasChanged;
+        SelectedRecipeService.OnChange += StateHasChanged;
+        SelectedComponentService.OnChange += StateHasChanged;
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
+
+
+}

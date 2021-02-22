@@ -1,0 +1,44 @@
+﻿@page "/about"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+
+<!--Simple about page-->
+
+<h3>About Plan a Meal Calculator (PMC)</h3>
+<p>
+    The idea for PMC came about after a laborious effort to plan a single Thanksgiving meal for my family.<br />I pulled out the old Excel spreadsheet
+    and tried to calculate when to start which recipe. It was crude but sparked the idea of PMC. <br />
+    <img src="@excelImage" style="width:580px; height:189px" alt="Excel Example" /> <br>
+</p>
+<p>
+    <hr />
+    <h5>Citations and Helpful Links</h5>
+    <div>
+        @foreach (var list in citations)
+        {
+
+            <div style="padding-left:15px"><a href="@list.CiteURL" target="_blank">@list.CiteName</a></div>
+
+        }
+    </div>
+</p>
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+
+    private string excelImage = "excelexample.png";
+    private List<Citation> citations = new List<Citation>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var repo = repoFactory.Get<PMC.Data.CitationRepo>();
+        citations = repo.GetCitationList().ToList();
+    }
+
+}

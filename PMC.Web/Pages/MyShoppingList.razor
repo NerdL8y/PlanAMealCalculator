@@ -1,0 +1,176 @@
+﻿@page "/myshoppinglist"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject SelectedMealService SelectedMealService
+<!--This page is done-->
+
+<div align="right">
+    <button style=" font-size:14px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div align="left">
+        <BlazorModal Title="Print Your Shopping List" IsOpened="isOpened">
+            <ModalBody>
+                <div>Each meal is assigned a date it will be served.  The Shopping List uses scheduled date of each meal to choose the ingredients, and their quantity, that appear on the shopping list. </div>
+                <div style="padding-top:7px;padding-bottom:3px">When the Shopping List is first opened, the Start Date is today, and the End Date is 7 days from today. This assumes you are going to shop for the week ahead.</div>
+                <div style="padding-bottom:3px; padding-left:10px">You can change these fields to the desired date range. Just make sure the End date is the same as, or after, the start date.</div>
+                <div style="padding-bottom:3px;">Click <b>Generate List</b> to generate the shopping list.</div>
+                <div style="padding-bottom:3px; padding-left:10px; padding-top:0px">The shopping list sorts by <b>Food Category</b> then by <b>Ingredient Description</b>. The list is sorted in this manner since items of the same category are usually grouped together at the store.</div>
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+
+<h3>My Shopping List</h3>
+@if (SelectedMealService.MealCount == 0)
+{
+    <p>A shopping list cannot be generated until you have created at least one meal.  . If you are new to PMC, select <b>Help</b> in the navigation area for instructions.</p>
+}
+
+@if (SelectedMealService.MealCount != 0)
+{
+    <table style="font-size:14px">
+        <tr>
+            <th width="15%">Start Date </th>
+            <th width="15%">End Date</th>
+            <th width="5%"></th>
+            <th width="65%"></th>
+        </tr>
+        <tr>
+            <td><input id="dateStart" @bind="@dateBegin" type="date" /></td>
+            <td><input id="dateEnd" @bind="@dateEnd" type="date" /></td>
+            <td><input id="btnGetShoppingList" @onclick="GetShoppingList" type="button" value="Generate List" /></td>
+            <td></td>
+        </tr>
+    </table>
+    <hr />
+}
+@if (shoppingListCount != 0)
+{
+<div class="grid-two-thirds">
+    <div class="grid-two-thirds-1 display-rows">
+        <table class="meals">
+            <tr style="border:solid; border-width:.5px; border-color:#ddd">
+                <th width="2%"><span class="oi oi-check" /></th>
+                <th width="17%" style="border-right:0px; border-left:0px">Food Category</th>
+                <th width="5%" style="text-align:right; border-left:0px; padding-right:10px ; border-right:0px">Qty</th>
+                <th width="10%" style="padding-left:5px; border-right:0px; border-left:0px">UoM</th>
+                <th width="67%" style="padding-left:5px; border-left:0px">Description</th>
+            </tr>
+            @foreach (var list in shoppingList)
+            {
+                <tr style="border:solid; border-width:.5px; border-color:#ddd">
+                    <td style="border-right:solid; border-color:#ddd; border-width:.5px;"></td>
+                    <td width="17%" style="padding-left:10px">@list.FoodCategoryDescription</td>
+                    <td width="5%" style="text-align:right;">@list.IngredientQty</td>
+                    <td width="10%" style="padding-left:5px">@list.UnitOfMeasureDescription</td>
+                    <td width="67%" style="padding-left:10px">@list.IngredientDescription @list.IngredientCondition </td>
+                </tr>
+            }
+        </table>
+        <p>This is the end of your shopping list.  Press Ctrl and P together to print your shopping list.</p>
+    </div>
+    <div class="grid-two-thirds-2" style="border:solid; border-width:.5px; border-color:#ddd; padding-left:10px">
+        <div><h5>Recipes included in this Shopping List</h5></div>
+        @foreach (var list in recipes)
+        {
+            <div> -- @list.RecipeName</div>
+        }
+    </div>
+    <br />
+</div>
+}
+
+
+
+
+    @if (errmsg == true)
+    {
+
+        <table style="background-color:lightcoral; width:200px; padding-left:15px">
+            <tr>
+                <td>
+                    Uh oh!  Your Start Date is greater than your End Date.
+                    The Start Date must be a date that is equal to, or before the End Date.
+                </td>
+            </tr>
+
+        </table>
+
+    }
+
+    @code {
+
+        [Inject]
+        private RepoFactory repoFactory { get; set; }
+
+        protected DateTime dateBegin = DateTime.Today;
+        protected DateTime dateEnd = DateTime.Now.AddDays(7);
+        protected int userID;
+        protected List<ShoppingList> shoppingList = new List<ShoppingList>();
+        protected List<ShoppingList> recipes = new List<ShoppingList>();
+        protected int recipeCount = 0;
+        protected List<FoodCategory> foodCategories = new List<FoodCategory>();
+        protected int shoppingListCount = 0;
+        protected bool errmsg = false;
+        protected DateTime tempDateBegin;
+        protected DateTime tempDateEnd;
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            userID = repoFactory.UserID;
+        }
+
+        //PMC1054-02 PMC1054-03 PMC1054-04 PMC1054-05 PMC1092-35
+        public async void GetShoppingList()
+        {
+            shoppingListCount = 0;
+            errmsg = false;
+            StateHasChanged();
+            checkDate();
+            if (errmsg == false)
+            {
+                var repo = repoFactory.Get<PMC.Data.ShoppingListRepo>();
+                shoppingList = repo.GetShoppingListByUserIDDateRange(userID, dateBegin, dateEnd).ToList();
+                shoppingListCount = shoppingList.Count();
+                recipes = repo.GetShoppingListRecipesByUserIDDateRange(userID, dateBegin, dateEnd).ToList();
+                recipeCount = recipes.Count();
+                StateHasChanged();
+
+                var repoFc = repoFactory.Get<PMC.Data.FoodCategoryRepo>();
+                foodCategories = repoFc.GetShoppingListFoodCateogoriesByUserIDMealDateRange(userID, dateBegin, dateEnd).ToList();
+                StateHasChanged();
+                isOpened = false;
+            }
+            StateHasChanged();
+            isOpened = false;
+        }
+
+
+        protected bool isOpened = false;
+
+        void OpenModal()
+        {
+            isOpened = true;
+
+        }
+        void CloseModal()
+        {
+            isOpened = false;
+        }
+
+        private void checkDate()
+        {
+            if (dateBegin > dateEnd)
+            {
+                errmsg = true;
+                isOpened = false;
+                StateHasChanged();
+            }
+        }
+
+
+
+    }

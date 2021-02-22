@@ -1,0 +1,402 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Candara', Helvetica, Arial, sans-serif;
+}
+
+emailLabel {
+    font-family: 'Candara', Helvetica, Arial, sans-serif;
+}
+.emailDisplay {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+b, .inputColumn {
+    
+}
+    .inputColumn .input-field {
+        tab-size: 3;
+    }
+
+u, user-input-field {
+    border-width: 0;
+    background-color: rgb(233, 238, 252);
+}
+
+sb, .select-list {
+    scrollbar-arrow-color: white;
+    scrollbar-base-color: white;
+    scrollbar-darkshadow-color: white;
+    scrollbar-3dlight-color: white;
+    scrollbar-face-color: white;
+    scrollbar-track-color: white;
+    scrollbar-highlight-color: white;
+    border-color:white;
+    overflow:hidden;
+    padding-bottom: 3px;
+    padding-top:3px;
+    font-size: 16px;
+    border-style:hidden;
+}
+
+.link {
+    border-style: hidden;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left:16px;
+}
+
+.link span {
+    color: blue;
+    font-size: 30px;
+    border-style: hidden;
+}
+.link:hover span {
+    border-style: hidden;
+}
+.link:hover {
+    text-decoration: underline;
+    border-style: hidden;
+}
+
+
+.display-rows, table {
+    font-family: Candara, Helvetica, Arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+    overflow-x: auto;
+}
+    .display-rows td, .meals th {
+        border: 1px solid #ddd;
+        padding-bottom: 1px;
+        padding-top: 1px;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+    
+    .display-rows tr:hover {
+        background-color: #C7C0EE;
+    }
+    .display-rows th {
+        background-color: #35268E;
+        color: white;
+    }
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-gap: 20px;
+    grid-template-areas: "app ent des";
+    padding-left: 10px;
+}
+.grid-item-1 {
+    grid-area: app;
+    font-size: 16px;
+}
+.grid-item-2 {
+    grid-area: ent;
+    font-size: 16px;
+}
+.grid-item-3 {
+    grid-area: des;
+    font-size: 16px;
+}
+
+.grid-help {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 10px;
+    grid-template-areas: "left right";
+    padding-left: 10px;
+    font-size: 14px;
+}
+
+.grid-help-1 {
+    grid-area: left;
+}
+
+.grid-help-2 {
+    grid-area: right;
+}
+
+.grid-quarter {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-gap: 0px;
+    grid-template-areas: "one two three four";
+    font-size: 14px;
+    vertical-align:top;
+}
+.grid-quarter-all {
+    grid-area: one two three four;
+}
+
+.grid-quarter-1 {
+    grid-area: one;
+    vertical-align: top;
+}
+.grid-quarter-2 {
+    grid-area: two;
+    vertical-align: top;
+}
+.grid-quarter-3 {
+    grid-area: three;
+    vertical-align: top;
+}
+.grid-quarter-4 {
+    grid-area: four;
+    vertical-align: top;
+}
+
+.grid-two-thirds {
+    display: grid;
+    grid-template-columns: 66% 34%;
+    grid-gap: 0px;
+    grid-template-areas: "two one";
+    font-size: 14px;
+    vertical-align: top;
+}
+
+.grid-two-thirds-1 {
+    grid-area: two;
+    vertical-align: top;
+}
+
+.grid-two-thirds-2 {
+    grid-area: one;
+    vertical-align: top;
+}
+
+.top {
+    height: 1px;
+}
+
+c, .column  {
+    display: flex;
+    font-size: 1rem;
+    border-collapse: collapse;
+}
+
+    .column .columnNext {
+        flex: 1;
+    }
+
+.flexbox-container {
+    display: flex;
+}
+.flexbox-item{
+    width:200px;
+    margin:1%;
+}
+.flexbox-item-1{
+    width:30%;
+    font-size: 10px;
+}
+.flexbox-item-2 {
+    width: 200px;
+    font-size: 10px;
+}
+.flexbox-item-3 {
+    width: 300px;
+    font-size: 10px;
+}
+
+
+
+d, .columnDisplay {
+    display: flex;
+    font-size: .75rem;
+}
+    .columnDisplay .columnDisplayNext{
+        flex: .25 ;
+    }
+
+
+
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-row {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.main {
+    flex: 1;
+}
+
+    .main .top-row {
+        background-color: #f7f7f7;
+        border-bottom: 1px solid #d6d5d5;
+        justify-content: flex-end;
+    }
+
+        .main .top-row > a, .main .top-row .btn-link {
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+
+.main .top-row a:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    
+
+    .sidebar {
+        background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    }
+
+    .sidebar .top-row {
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .sidebar .navbar-brand {
+        font-size: 1rem;
+        padding-bottom:5px;
+    }
+
+    .sidebar .oi {
+        width: 2rem;
+        font-size: 1rem;
+        vertical-align: text-top;
+        top: -2px;
+    }
+
+    .sidebar .nav-item {
+        font-size: 0.9rem;
+        padding-bottom: 0.5rem;
+    }
+
+        .sidebar .nav-item:first-of-type {
+            padding-top: 1rem;
+        }
+
+        .sidebar .nav-item:last-of-type {
+            padding-bottom: 1rem;
+        }
+
+        .sidebar .nav-item a {
+            color: #d7d7d7;
+            border-radius: 4px;
+            height: 1rem;
+            display: flex;
+            align-items: center;
+            line-height: 1rem;
+        }
+
+            .sidebar .nav-item a.active {
+                background-color: rgba(255,255,255,0.25);
+                color: white;
+            }
+
+            .sidebar .nav-item a:hover {
+                background-color: rgba(255,255,255,0.1);
+                color: white;
+            }
+
+.content {
+    padding-top: 1rem;
+}
+
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+
+
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1rem 0.7rem 1rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .main .top-row:not(.auth) {
+        display: none;
+    }
+
+    .main .top-row.auth {
+        justify-content: space-between;
+    }
+
+    .main .top-row a, .main .top-row .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    app {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .main .top-row {
+        position: sticky;
+        top: 0;
+    }
+
+    .main > div {
+        padding-left: 1rem !important;
+        padding-right: 1.5rem !important;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .sidebar .collapse {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+}

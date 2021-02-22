@@ -1,0 +1,208 @@
+﻿@page "/mycomponent1"
+@using PMC.Web.Data
+@using PMC.Data
+@using PMC.DataModel
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedComponentService SelectedComponentService
+
+<div align="right">
+    <button style=" font-size:16px; background-color:white; border-width:0px; border-color:white" @onclick="@OpenModal">Help</button>
+    <div style="font-size:14px" align="left">
+        <BlazorModal Title="Component" IsOpened="isOpened">
+            <ModalBody>
+                <div>
+                    <div>A component is part of a meal.</div>
+                    <div>Each meal needs at least one component, but could have more than one component.</div>
+                    <div>A component needs at least one recipe, but can have more than one recipe.</div>
+                    <div style="padding-left:10px">For example, an Appetizer component may contain a Cheeseball recipe and a Smoked Oysters Appetizer recipe.</div>
+                    <div>To add a recipe to this component, use the <b>Select a Recipe</b> box below to select one of your existing recipes.</div>
+                    <div>The <b>Prep in Advance</b> number represents the number of hours the recipe can be prepared in advance.</div>
+                    <div style="padding-left:10px">For example, if this were a Dessert component that contained pies or cakes, you may want to make those 24 hours in advance, therefore you would enter <b>24</b> into the Prep in Advance field.</div>
+                    <div>If a recipe does not exist yet, click <b>Add a Recipe</b> in the navigation area to add a new recipe.</div>
+                </div>
+
+            </ModalBody>
+            <ModalFooter>
+            </ModalFooter>
+        </BlazorModal>
+    </div>
+</div>
+
+<!--Done for now. Need to add help button-->
+<!--If a component has not been selected -->
+@if (SelectedComponentService.ComponentID == 0)
+{
+    <p>A component has not yet been selected.</p>
+    <p><em>Please select <b>My Component List</b> in the navigation area and select the desired component to view the component's recipes.</em></p>
+}
+
+<!--If a component has been selected -->
+@if (SelectedComponentService.ComponentID != 0)
+{
+    <div><b>@thisComponent.CompName</b> is @participle @thisComponent.CompTypeDesc and is comprised of @recipeCount @recipeHeader.</div>
+    <br />
+    <div>
+        <div class="select-list"><b>Component @recipeHeader</b></div>
+        <hr />
+        <div style="border-style:hidden">
+            <select class="select-list" style="width:50%;" @bind="@SelectedRecipeService.RecipeID" size="@displayNumberRows" @oninput="@listChange">
+                @foreach (var list in recipes)
+                {
+                    <option class="link" style="width:50%; padding-left:10px" value="@list.RecipeID" onmouseover="this.style.color='#5440CC'" onmouseout="this.style.color='#000000'">@list.RcpName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <hr />
+    @if (recipeCount == 0)
+    {
+        <p>
+            There are no recipes selected for the <b>@thisComponent.CompName</b> component. <br />
+            To add a recipe, click the arrow on the dropdown box and select a recipe, enter the <b>Prep in Advance hours</b> (if applicable), and click Submit.
+        </p>
+    }
+
+    @if (recipeCount > 0)
+    {
+        <p>To add a Recipe to this component, select a recipe, enter the Prep in Advance hours, if applicble, then click Submit.</p>
+    }
+    <table>
+        <tr>
+            <th>Select a Recipe</th>
+            <th>Prep In Advance</th>
+        </tr>
+        <tr>
+            <td width="25%">
+                <select style="border:solid; border-width:.5px" @bind="@SelectedRecipeService.RecipeID" width="25px" aria-hidden="true">
+                    <option value="Select one" class="link">Select from Recipe List</option>
+                    @foreach (var list in allRecipes)
+                    {
+                        <option value="@list.RecipeID" class="link">@list.RcpName</option>
+                    }
+                </select>
+            </td>
+            <td width="50%">
+                <input id="numPrepInAdvance" @bind="@prepInAdvanceHours" type="number" style="width:40px" min="0">
+            </td>
+        </tr>
+        @if (SelectedRecipeService.RecipeID != 0)
+        {
+            <tr>
+                <td></td>
+                <td><input id="btnAddMeal" @onclick="@addMyRecipe" type="button" value="Submit" /></td>
+            </tr>
+        }
+    </table>
+
+}
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+    private Component thisComponent = new Component();
+    private int recipeCount = 0;
+    private int displayNumberRows = 0;
+    private List<Recipe> recipes = new List<Recipe>();
+    private List<Recipe> allRecipes = new List<Recipe>();
+    private int selected = 0;
+    private Recipe currentSingleRecipe;
+    private int choiceRcp = 0;
+    private string participle = "a";
+    private string recipeHeader = "";
+    private string optionOverflow = "overflow:hidden;";
+    private int prepInAdvanceHours = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        SelectedRecipeService.RecipeID = 0;
+        var repo = repoFactory.Get<PMC.Data.ComponentRepo>();
+        var component = repo.GetComponentByCompID(SelectedComponentService.ComponentID);
+        thisComponent = component;
+        refreshRecipes();
+        getAllRecipes();
+        setGrammar();
+    }
+
+    private void listChange()
+    {
+        isOpened = false;
+        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+
+    }
+
+    private void setGrammar()
+    {
+        if (thisComponent._cCompType == 1 || thisComponent._cCompType == 2)
+        {
+            participle = "an";
+        }
+
+        bool multiRecipe = false;
+        if (recipeCount == 1)
+        {
+            multiRecipe = false;
+        }
+
+        if (recipeCount > 1)
+        {
+            multiRecipe = true;
+        }
+
+        switch (multiRecipe)
+        {
+            case false:
+                recipeHeader = "Recipe";
+                break;
+            case true:
+                recipeHeader = "Recipes";
+                break;
+
+        }
+        StateHasChanged();
+        isOpened = false;
+    }
+
+    private void getAllRecipes()
+    {
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        allRecipes = repo.GetRecipesByUserID(userID).ToList();
+        StateHasChanged();
+        isOpened = false;
+    }
+
+    private void addMyRecipe()
+    {
+        var repo = repoFactory.Get<PMC.Data.ComponentRecipeRepo>();
+        var insertThis = repo.InsertComponentRecipeByCompIDRecipeID(SelectedComponentService.ComponentID, SelectedRecipeService.RecipeID, 0, userID);
+        refreshRecipes();
+        SelectedRecipeService.RecipeID = 0;
+        StateHasChanged();
+        isOpened = false;
+    }
+
+    private void refreshRecipes()
+    {
+        var rcpRepo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        recipes = rcpRepo.GetRecipesByCompID(SelectedComponentService.ComponentID).ToList();
+        recipeCount = recipes.Count;
+        displayNumberRows = recipeCount + 5;
+        setGrammar();
+        StateHasChanged();
+        isOpened = false;
+    }
+
+    bool isOpened = false;
+    void OpenModal()
+    {
+        isOpened = true;
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+}

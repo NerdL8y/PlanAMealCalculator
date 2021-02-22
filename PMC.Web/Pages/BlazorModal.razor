@@ -1,0 +1,34 @@
+﻿<div class="blazor-modal @cssClass" >
+    <div class="blazor-modal-content">
+        <div class="blazor-modal-header" style="color:white;">
+            <h5 class="blazor-modal-title" style="vertical-align:middle">@Title</h5>
+            <span class="blazor-modal-close-button" @onclick="() => IsOpened = false" style="padding-right:10px; vertical-align:middle">Close</span>
+        </div>
+        <div class="blazor-modal-body" >
+            @ModalBody
+        </div>
+        <div class="blazor-modal-footer">
+            @ModalFooter
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    //PMC1092-30 
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ModalBody { get; set; }
+
+    [Parameter]
+    public RenderFragment ModalFooter { get; set; }
+
+    [Parameter]
+    public bool IsOpened { get; set; }
+
+    string cssClass => IsOpened ? "show" : "hide";
+
+}

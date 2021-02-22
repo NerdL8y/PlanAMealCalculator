@@ -1,0 +1,246 @@
+﻿@page "/recipeinstructionlist"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedInstructionService SelectedInstructionService
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+@inject AppState AppState
+
+@if (SelectedRecipeService.RecipeID != 0 && SelectedInstructionService.InstructionCount > 0)
+{
+
+    <div class="grid-help-2">
+        <table style="overflow-x: auto; width:500px">
+            <tr>
+                <th align="center" style="background-color:lightgray; text-align:center;"><b>Step</b></th>
+                <th align="right" style="background-color:lightgray; text-align:center;"><b>Est Time</b></th>
+                <th style="background-color:lightgray;"></th>
+                <th style="background-color:lightgray;"><b>Instructions</b></th>
+                <th style="background-color:lightgray;"><b>Delete</b></th>
+            </tr>
+
+            @foreach (var list in instructions)
+            {
+                int currentSortOrder = list.InstructionSortOrder;
+                decimal currentEstTime = list.InstructionEstTime;
+                string currentDescription = list.InstDescription;
+                string currentUOM = list.UotDesc;
+                textAreaRows = calculateTextareaHeight(list.InstDescription);
+
+                <tr>
+                    <td align="center" valign="top">
+                        <input name="numSortOrder" type="number" style="width:35px; border-width: 0; background-color: rgb(233, 238, 252); vertical-align:top" min="1" max="2000"
+                               @bind="@currentSortOrder"
+                               @onblur="@(() => { newSortOrder = currentSortOrder; SelectedInstructionService.InstructionID = list.InstructionID; StateHasChanged(); setInstructionSortOrder(); })">
+                    </td>
+                    <td align="right" style="padding-right:10px" valign="top">
+                        <input name="decEstTime" type="number" style="width:60px; border-width: 0; background-color: rgb(233, 238, 252); vertical-align:top" min=".01"
+                               @bind="currentEstTime"
+                               @onblur="@(() => { newEstTime = currentEstTime; SelectedInstructionService.InstructionID = list.InstructionID; StateHasChanged(); setInstructionEstTime(); })" />
+                    </td>
+
+                    <td valign="top">@list.UotDesc</td>
+                    <td style="vertical-align:top; position:relative" valign="top">
+                        <textarea id="txtareaInstruction" wrap="soft" rows="@textAreaRows" cols="@textAreaCols" style="border-width: 0; background-color: rgb(233, 238, 252); "
+                                  maxlength="256" type="text"
+                                  @bind="@currentDescription"
+                                  @onblur="@(() => { newDescription = currentDescription; SelectedInstructionService.InstructionID = list.InstructionID; StateHasChanged(); setInstructionDescription(); })"></textarea>
+                    </td>
+                    <td align="center" valign="top">
+                        <label>
+                            <input name="choiceInstructionID" type="radio" tabindex="-1"
+                                   value="@list.InstructionID"
+                                   @onchange="@(() => { SelectedInstructionService.InstructionID = list.InstructionID; })"
+                                   @oninput="@AskDelete">
+                        </label>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+}
+
+@if (yesDelete == true)
+{
+    <div align="right">
+        <div align="left">
+            <BlazorModal Title="Delete Instruction" IsOpened="isOpened">
+                <ModalBody>
+                    <div>Are you sure you would like to delete this instruction?</div>
+                    <div style="padding-left:10px">If yes, click the <b>Delete Instruction</b> button.</div>
+                    <div style="padding-left:10px">If no, click <b>Close</b>.</div>
+                </ModalBody>
+                <ModalFooter>
+                    <div style="text-align:center"><input type="button" @onclick="@Delete" value="Delete Instruction" style="background-color:yellow;" /></div>
+                </ModalFooter>
+            </BlazorModal>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+
+    private int userID;
+    private Recipe recipe = new Recipe();
+    private List<Instruction> instructions = new List<Instruction>();
+    private decimal instructionEstTime;
+    private string instDescription = "Enter new instruction";
+    private int instructionCount = 0;
+    private bool yesDelete = false;
+    protected bool isOpened = false;
+    protected int newSortOrder = 0;
+    protected decimal newEstTime;
+    private int newUOT;
+    private string newDescription;
+    private List<Uot> uotList = new List<Uot>();
+    private int uot;
+
+    private int textAreaCols = 50;
+    private int textAreaRows = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        SelectedInstructionService.InstructionCount = 0;
+        SelectedInstructionService.OnChange += StateHasChanged;
+        yesDelete = false;
+
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        recipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
+
+        getInstructions();
+
+        var uotRepo = repoFactory.Get<PMC.Data.UotRepo>();
+        uotList = uotRepo.GetUotList().ToList();
+
+        StateHasChanged();
+    }
+
+    protected async void AskDelete()
+    {
+
+        OpenModal();
+        yesDelete = true;
+        StateHasChanged();
+
+    }
+
+    protected async void DoNotDelete()
+    {
+        yesDelete = false;
+        StateHasChanged();
+    }
+
+    protected async void Delete()
+    {
+        var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        repo.DeleteRecipeInstructionByRecipeIDInstructionIDUserID(SelectedRecipeService.RecipeID, SelectedInstructionService.InstructionID, userID);
+        SelectedInstructionService.InstructionID = 0;
+        SelectedInstructionService.InstructionCount = 0;
+
+        renumberInstructionSortOrder();
+        getInstructions();
+        CloseModal();
+        refreshPage();
+        StateHasChanged();
+
+    }
+
+    private void getInstructions()
+    {
+        var instRepo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        instructions = instRepo.GetInstructionsByRecipeID(SelectedRecipeService.RecipeID).ToList();
+        SelectedInstructionService.InstructionCount = instructions.Count();
+        SelectedInstructionService.OnChange += StateHasChanged;
+        StateHasChanged();
+    }
+
+    private void renumberInstructionSortOrder()
+    {
+        var instRepo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var instructs = instRepo.GetInstructionsByRecipeID(SelectedRecipeService.RecipeID).ToList();
+        int newStep = 1;
+        int instNumber = 0;
+        foreach (var list in instructs)
+        {
+            instNumber = list.InstructionID;
+            instRepo.SetInstructionSortOrder(instNumber, newStep);
+            newStep += 1;
+        }
+
+    }
+
+    // PMC1033-03 PMC1033-04 PMC1092-34
+    private void setInstructionSortOrder()
+    {
+        var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var updateRecord = repo.SetInstructionSortOrderByInstructionID(SelectedInstructionService.InstructionID, newSortOrder);
+        refreshPage();
+    }
+
+    private void setInstructionEstTime()
+    {
+        var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var updateRecord = repo.SetInstructionEstTime(SelectedInstructionService.InstructionID, newEstTime);
+
+        refreshPage();
+    }
+
+    private void setInstructionUOT()
+    {
+        var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var updateRecord = repo.SetInstructionUnitOfTime(SelectedInstructionService.InstructionID, newUOT);
+
+        refreshPage();
+    }
+
+    private int calculateTextareaHeight(string instDesc)
+    {
+        int instDescLength = instDesc.Length;
+        int descLengthWholeNumber = instDescLength / 53;
+        int descLengthRemainder = instDescLength % 53;
+        int result = 1;
+
+        if (descLengthWholeNumber > 0 && descLengthRemainder > 0)
+        {
+            result += descLengthWholeNumber;
+        }
+
+        return result;
+    }
+
+    private void setInstructionDescription()
+    {
+        var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var updateRecord = repo.SetInstructionDescription(SelectedInstructionService.InstructionID, newDescription);
+
+        refreshPage();
+    }
+
+    private void refreshPage()
+    {
+        SelectedInstructionService.InstructionID = 0;
+        SelectedInstructionService.OnChange += StateHasChanged;
+        StateHasChanged();
+        NavManager.NavigateTo(HomeURIService.homeUri + "empty");
+        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+    }
+
+    void OpenModal()
+    {
+        isOpened = true;
+
+    }
+    void CloseModal()
+    {
+        isOpened = false;
+    }
+}

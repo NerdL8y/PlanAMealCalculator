@@ -1,0 +1,126 @@
+﻿@page "/addinstruction"
+@using PMC.Data
+@using PMC.DataModel
+@using PMC.Web.Data
+@inject IJSRuntime JSRuntime
+@inject SelectedRecipeService SelectedRecipeService
+@inject SelectedInstructionService SelectedInstructionService
+@inject NavigationManager NavManager
+@inject HomeURIService HomeURIService
+
+<!--Provides the ability to add instructions to a selected recipe-->
+<h5>Add Instructions</h5>
+@if (SelectedRecipeService.RecipeID > 0)
+{
+    <table style="overflow-x: auto;">
+        <tr>
+            <th>Est Time</th>
+            <th>UoT</th>
+            <th>Instruction</th>
+        </tr>
+        <tr>
+            <td valign="top"><input id="numEstTime"  @bind="@instructionEstTime" type="number" step="any" min="0.01" max="200000" style="width:60px; border-width: 0; background-color:rgb(255, 249, 132);" onclick="this.setSelectionRange(0, this.value.length)" /></td>
+            <td valign="top">
+                <select name="selUoT" id="selUOT" style="border-width: 0; background-color:rgb(255, 249, 132);" @bind="@uot">
+                    @foreach (var list in uotList)
+                    {
+                        <option value=@list.UotID>@list.UotDesc</option>
+                    }
+                </select>
+            </td>
+            <td valign="top"><textarea id="txtareaInstruction" style="border-width: 0; background-color:rgb(255, 249, 132);" wrap="soft" rows="@textAreaRows" cols="@textAreaCols" placeholder="Enter new instruction" @bind="@instDescription" type="text" onfocus="this.focus();"></textarea></td>
+        </tr>
+        <tr>
+            @if (instructionEstTime != 0 && uot > 0 && instDescription != "Enter new instruction")
+            {
+                <td valign="top"><input id="btnAddInstruction" @onclick="@addInstruction" type="button" value="Add Instruction" /></td>
+                <td></td>
+                <td></td>
+            }
+
+        </tr>
+    </table>
+
+       
+}
+
+@code {
+    [Inject]
+    private RepoFactory repoFactory { get; set; }
+    private int userID;
+    private Recipe recipe = new Recipe();
+
+    private List<Instruction> instructions = new List<Instruction>();
+    //for inserting new instruction
+    private decimal instructionEstTime;
+    private int uot;
+    private int stepCounter = 1;
+    private string instDescription = "";
+    private List<Uot> uotList = new List<Uot>();
+    private int instructionCount = 0;
+
+    private int textAreaCols = 50;
+    private int textAreaRows = 2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = repoFactory.UserID;
+        var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        //todo changed from GetRecipeByRecipeID
+        recipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
+
+
+        var uotRepo = repoFactory.Get<PMC.Data.UotRepo>();
+        //var uotlist = uotRepo.GetUotList().ToList();
+        //uotList = uotlist
+        uotList = uotRepo.GetUotList().ToList();
+
+        var instRepo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var currRecipeInst = instRepo.GetInstructionsByRecipeID(SelectedRecipeService.RecipeID);
+
+        SelectedInstructionService.InstructionID = 0;
+        SelectedInstructionService.InstructionCount = currRecipeInst.Count();
+
+        //If other instructions exist, this will be the next instruction Step number
+        stepCounter = SelectedInstructionService.InstructionCount + 1;
+
+    }
+
+    //PMC1032-06 PMC1032-07 PMC1092-07 PMC1092-08
+    protected async void addInstruction()
+    {
+        var instructionRepo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var insertedInstruction = instructionRepo.InsertInstructionByRecipeID(SelectedRecipeService.RecipeID, instructionEstTime, uot, stepCounter, instDescription, userID);
+
+        //var recipeRepo = repoFactory.Get<PMC.Data.RecipeRepo>();
+        //recipe = recipeRepo.GetRecipeByRecipeID(SelectedRecipeService.RecipeID);
+        var currentIngredients = instructionRepo.GetInstructionsByRecipeID(SelectedRecipeService.RecipeID);
+        instructions = currentIngredients.ToList();
+        instructionCount = instructions.Count();
+        //incrementes the stepCounter that displays on the screen
+        stepCounter += 1;
+
+        refreshInstructionEntry();
+        SelectedInstructionService.InstructionCount = instructionCount;
+        StateHasChanged();
+        NavManager.NavigateTo(HomeURIService.homeUri + "recipeinstructionlist");
+        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+    }
+
+
+    //refreshes fields after a successful ingredient insert to prepare for the next ingredient to be added.
+    protected async void refreshInstructionEntry()
+    {
+        instructionEstTime = 0;
+        uot = 0;
+        instDescription = "";
+        SelectedInstructionService.InstructionID = 0;
+        var instRepo = repoFactory.Get<PMC.Data.InstructionRepo>();
+        var currRecipeInst = instRepo.GetInstructionsByRecipeID(SelectedRecipeService.RecipeID);
+
+        SelectedInstructionService.InstructionCount = currRecipeInst.Count();
+        SelectedInstructionService.OnChange += StateHasChanged;
+    }
+
+
+}

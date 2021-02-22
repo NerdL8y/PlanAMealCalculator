@@ -1,0 +1,45 @@
+﻿@page "/recipetable"
+@using PMC.DataModel
+@using PMC.Data
+@using PMC.Web.Data
+@inject SelectedRecipeService SelectedRecipeService
+
+    <style>
+        .tab1 {
+            tab-size: 2;
+        }
+
+        .tab2 {
+            tab-size: 4;
+        }
+
+        .tab4 {
+            tab-size: 8;
+        }
+    </style>
+
+        @foreach (var list in recipeList)
+        {
+            @list.RcpName
+        }
+
+
+    @code {
+
+        [Inject]
+        private RepoFactory repoFactory { get; set; }
+        private int userID;
+        protected string contentArea;
+        protected int recipeCount = 0;
+        private List<Recipe> recipeList = new List<Recipe>();
+        private Recipe recipe = new Recipe();
+
+        protected override async Task OnInitializedAsync()
+        {
+            userID = repoFactory.UserID;
+
+            //SelectedRecipeService.RecipeID = 0;
+            var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
+            recipeList = repo.GetRecipesByUserID(userID).ToList();
+        }
+    }
