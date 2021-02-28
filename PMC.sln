@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMC.NoSQL", "PMC.NoSQL\PMC.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMC.Web", "PMC.Web\PMC.Web.csproj", "{FA020B4B-ACC2-4D2E-BE02-E423A8A617C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestPMC", "UnitTestPMC\UnitTestPMC.csproj", "{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{FA020B4B-ACC2-4D2E-BE02-E423A8A617C5}.Release|x64.Build.0 = Release|Any CPU
 		{FA020B4B-ACC2-4D2E-BE02-E423A8A617C5}.Release|x86.ActiveCfg = Release|Any CPU
 		{FA020B4B-ACC2-4D2E-BE02-E423A8A617C5}.Release|x86.Build.0 = Release|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Debug|x64.Build.0 = Debug|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Debug|x86.Build.0 = Debug|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Release|x64.ActiveCfg = Release|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Release|x64.Build.0 = Release|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4BBDCA1-D565-40D5-82AA-3F6E1579E68B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
