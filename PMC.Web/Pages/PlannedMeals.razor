@@ -115,9 +115,9 @@
     private int userID;
     private int mealID;
     protected int MealID { get { return mealID; } set { mealID = value; SelectedMealService.MealID = value; } }
-    private int mealCount;
-    private string tempMealDate = "";
-    private string tempStartDate = "";
+    //private int mealCount;
+    //private string tempMealDate = "";
+    //private string tempStartDate = "";
 
     //PMC1052-01 PMC1052-05 PMC1055-01 PMC1055-02 PMC1092-17
     protected override async Task OnInitializedAsync()
@@ -141,7 +141,7 @@
     protected void mealSelect(ChangeEventArgs e)
     {
         isOpened = false;
-        NavManager.NavigateTo(HomeURIService.homeUri + "mymeal");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mymeal");
         StateHasChanged();
     }
 

@@ -17,10 +17,10 @@ namespace PMC.DataModel
 		public string IngredientDescription { get; set; }
 
 		//overrides
-		public override string ToString()
-        {
-			return $"{RecipeStartTime.ToString("h:mm tt")} {IngredientQty} {UnitOfMeasureDescription}\t{IngredientDescription}";
-		}
+		//public override string ToString()
+		//{
+		//	return $"{RecipeStartTime.ToString("h:mm tt")} {IngredientQty} {UnitOfMeasureDescription}\t{IngredientDescription}";
+		//}
 
-    }
+	}
 }

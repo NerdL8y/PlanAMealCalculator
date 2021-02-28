@@ -158,12 +158,12 @@
     [Inject]
     private RepoFactory repoFactory { get; set; }
     private int userID;
-    private int mealID;
-    private int currCompID = 0;
+    //private int mealID;
+    //private int currCompID = 0;
     private int currentNumGuests;
     private int currentNumPreparers;
-    private int newNumGuests;
-    private int newNumPreparers;
+    //private int newNumGuests;
+    //private int newNumPreparers;
     private int mealComponentCount = 0;
     private int componentCount = 0;
 
@@ -178,14 +178,14 @@
     public string MealTypeDesc { get; set; }
 
     private string currentMealName = "";
-    private string newMealName = "";
+    //private string newMealName = "";
 
     private DateTime dateCompiled;
     private DateTime tempTime = new DateTime(01, 01, 01, 13, 00, 00);
-    private DateTime mealServeTime;
-    private DateTime startMealPrepNLT;
+    //private DateTime mealServeTime;
+    //private DateTime startMealPrepNLT;
     private DateTime currentMealDate;
-    private DateTime newMealDate;
+    //private DateTime newMealDate;
 
     private bool changesMade = false;
 
@@ -209,7 +209,7 @@
             var currMealComps = repoCR.GetMealComponentsByMealID(mymeal.MealID).ToList();
             currentMealComponents = currMealComps;
             mealComponentCount = currMealComps.Count();
-            
+
             var compRepo = repoFactory.Get<PMC.Data.ComponentRepo>();
             components = compRepo.GetComponentsByUserID(userID).ToList();
             componentCount = components.Count + 2;
@@ -274,8 +274,8 @@
     {
         var repo = repoFactory.Get<PMC.Data.MealRepo>();
         mymeal = repo.GetMealByMealID(SelectedMealService.MealID);
-        NavManager.NavigateTo(HomeURIService.homeUri + "empty");
-        NavManager.NavigateTo(HomeURIService.homeUri + "mymeal");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "empty");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mymeal");
     }
 
     protected bool isOpened = false;

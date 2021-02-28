@@ -112,7 +112,7 @@ using PMC.Web.Data;
         var currRepo = repo.Logout(userID);
         userID = 0;
         AppState.LoggedIn = false;
-        NavManager.NavigateTo(HomeURIService.homeUri + "/");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "/");
     }
 
 #line default

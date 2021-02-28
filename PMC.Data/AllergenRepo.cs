@@ -10,7 +10,7 @@ namespace PMC.Data
     public class AllergenRepo
     {
         DataContext DB;
-        int userID;
+        protected int userID;
 
         public AllergenRepo(int userID, DataContext db)
         {

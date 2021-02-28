@@ -85,18 +85,18 @@
     private RepoFactory repoFactory { get; set; }
     private int userID;
     private Recipe recipe = new Recipe();
-    private int recipeIngredientCount = 0;
+    //private int recipeIngredientCount = 0;
     private int initialIngredientCount = 0;
-    private int ingredientID;
-    private decimal ingredientQty;
-    private int uom;
-    private string ingrCondition;
+    //private int ingredientID;
+    //private decimal ingredientQty;
+    //private int uom;
+    //private string ingrCondition;
     //private int testIngredientID;
     //private List<Ingredient> ingredients = new List<Ingredient>();
     private List<RecipeIngredient> ingredients = new List<RecipeIngredient>();
     private List<RecipeIngredientRepo> recipeIngredients = new List<RecipeIngredientRepo>();
     private List<Uom> uomList = new List<Uom>();
-    private bool ack = false;
+    //private bool ack = false;
     private bool yesDelete = false;
     protected bool isOpened = false;
     protected bool checkedRadio = false;
@@ -152,7 +152,7 @@
         checkedRadio = false;
         yesDelete = false;
         StateHasChanged();
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
     protected async void DeleteIngredient()
@@ -199,8 +199,8 @@
         SelectedIngredientService.IngredientID = 0;
         SelectedIngredientService.OnChange += StateHasChanged;
         StateHasChanged();
-        NavManager.NavigateTo(HomeURIService.homeUri + "empty");
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "empty");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
     private void checkIngredientInfo()

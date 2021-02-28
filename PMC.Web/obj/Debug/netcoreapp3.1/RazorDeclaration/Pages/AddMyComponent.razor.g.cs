@@ -149,7 +149,7 @@ using PMC.DataModel;
         component = currentComp;
         SelectedComponentService.ComponentID = component.CompID;
         StateHasChanged();
-        NavManager.NavigateTo(HomeURIService.homeUri + "mycomponent");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mycomponent");
     }
 
     //Gathers data necessary to populate lists used in foreach loops, etc.

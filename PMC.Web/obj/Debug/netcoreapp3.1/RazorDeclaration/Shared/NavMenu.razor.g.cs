@@ -111,7 +111,7 @@ using PMC.DataModel;
     private RepoFactory repoFactory { get; set; }
     private bool collapseNavMenu = true;
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private string pmcImage = "PMC_Logo_trnsprnt.png";
+    //private string pmcImage = "PMC_Logo_trnsprnt.png";
 
     protected override async Task OnInitializedAsync()
     {
@@ -119,6 +119,7 @@ using PMC.DataModel;
         SelectedMealService.OnChange += StateHasChanged;
         SelectedRecipeService.OnChange += StateHasChanged;
         SelectedComponentService.OnChange += StateHasChanged;
+        
     }
 
     private void ToggleNavMenu()

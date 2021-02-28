@@ -20,9 +20,9 @@ namespace PMC.DataModel
         public string RecipeName { get; set; }
 
         //overrides
-        public override string ToString()
-        {
-            return $"{StepStartTime.ToString("ddd")} {StepStartTime.ToString("h:mm tt")} {InstructionDescription} ";
-        }
+        //public override string ToString()
+        //{
+        //    return $"{StepStartTime.ToString("ddd")} {StepStartTime.ToString("h:mm tt")} {InstructionDescription} ";
+        //}
     }
 }

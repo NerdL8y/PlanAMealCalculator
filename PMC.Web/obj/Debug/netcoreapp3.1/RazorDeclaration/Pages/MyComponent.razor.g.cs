@@ -116,19 +116,19 @@ using PMC.DataModel;
     private int displayNumberRows = 0;
     private List<Recipe> recipes = new List<Recipe>();
     private List<Recipe> allRecipes = new List<Recipe>();
-    private int selected = 0;
+    //private int selected = 0;
     private string selectedRecipeName = "";
-    private int choiceRcp = 0;
+    //private int choiceRcp = 0;
     private string participle = "An";
     private string recipeHeader = "";
-    private string optionOverflow = "overflow:hidden;";
+    //private string optionOverflow = "overflow:hidden;";
     private int prepInAdvanceHours = 0;
     private string recipeSearch = "";
     private List<Recipe> filteredRecipes = new List<Recipe>();
     private int recipeSearchCount = 0;
     private string searchUnsuccessful = "";
     private string currentComponentName = "";
-    private bool pia = false;
+    //private bool pia = false;
 
 
 
@@ -157,7 +157,7 @@ using PMC.DataModel;
     private void listChange()
     {
         isOpened = false;
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
 
     }
 
@@ -251,8 +251,8 @@ using PMC.DataModel;
 
     private void refreshPage()
     {
-        NavManager.NavigateTo(HomeURIService.homeUri + "empty");
-        NavManager.NavigateTo(HomeURIService.homeUri + "mycomponent");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "empty");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mycomponent");
     }
 
 

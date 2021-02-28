@@ -134,7 +134,7 @@ using PMC.DataModel;
 
 
     private DateTime dateCompiled;
-    private DateTime servetime;
+    //private DateTime servetime;
 
 
     protected override async Task OnInitializedAsync()
@@ -227,7 +227,7 @@ using PMC.DataModel;
         currentMealComponents = repo.GetMealComponentsByMealID(SelectedMealService.MealID).ToList();
         mealComponentCount = currentMealComponents.Count();
 
-        NavManager.NavigateTo(HomeURIService.homeUri + "mymeal");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mymeal");
     }
 
     protected bool isOpened = false;

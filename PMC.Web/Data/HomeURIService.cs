@@ -11,7 +11,8 @@ namespace PMC.Web.Data
     public class HomeURIService
     {
         private string _homeUri;
-        public string homeUri
+        
+        public string HomeUri
         {
             get
             {

@@ -121,7 +121,7 @@ using PMC.Web.Data;
     private int recipeSearchCount = 0;
     private string searchUnsuccessful = "";
     private bool viewAllRecipes = false;
-    private string selectedRecipeName = "";
+    //private string selectedRecipeName = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -156,12 +156,12 @@ using PMC.Web.Data;
     protected void MyRecipe(ChangeEventArgs e)
     {
         isOpened = false;
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
     private void goToAddRecipe()
     {
-        NavManager.NavigateTo(HomeURIService.homeUri + "addmyrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "addmyrecipe");
     }
 
     private void expand()

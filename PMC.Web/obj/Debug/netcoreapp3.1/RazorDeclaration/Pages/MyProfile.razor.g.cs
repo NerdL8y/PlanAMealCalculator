@@ -133,7 +133,7 @@ using PMC.DataModel;
     protected void helpOnStartUp()
     {
         userRepo.SetUserShowHelpOnStartUp(userID);
-        NavManager.NavigateTo(HomeURIService.homeUri + "help");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "help");
     }
 
 

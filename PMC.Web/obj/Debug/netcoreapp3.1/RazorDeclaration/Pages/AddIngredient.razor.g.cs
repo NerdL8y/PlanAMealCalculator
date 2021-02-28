@@ -113,13 +113,13 @@ using PMC.Web.Data;
 
     private Recipe recipe = new Recipe();
     private List<Ingredient> filteredIngredients = new List<Ingredient>();
-    private List<Ingredient> ingredients;
-    private int selectedIngredientID;
+    //private List<Ingredient> ingredients;
+    //private int selectedIngredientID;
     private string selectedIngredientName = "";
     private int ingredientSearchCount;
     private string searchUnsuccessful = "";
     private int recipeIngredientCount = 0;
-    private int ingredientID;
+    //private int ingredientID;
     private Ingredient ingredient = new Ingredient();
     private List<RecipeIngredient> recipeIngredients;
 
@@ -191,8 +191,8 @@ using PMC.Web.Data;
             //call method that resets the fields so user can search for another ingredient
             refreshIngredientSearch();
             StateHasChanged();
-            NavManager.NavigateTo(HomeURIService.homeUri + "recipeingredientlist");
-            NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "recipeingredientlist");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
         }
     }
 

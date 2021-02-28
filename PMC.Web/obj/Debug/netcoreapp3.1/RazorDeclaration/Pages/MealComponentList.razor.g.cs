@@ -120,11 +120,11 @@ using PMC.DataModel;
     protected List<ComponentType> compTypes = new List<ComponentType>();
     private List<Component> components = new List<Component>();
     private List<Component> appetizers = new List<Component>();
-    private int appcount = 0;
+    //private int appcount = 0;
     private List<Component> entrees = new List<Component>();
-    private int entreecount = 0;
+    //private int entreecount = 0;
     private List<Component> desserts = new List<Component>();
-    private int dessertcount = 0;
+    //private int dessertcount = 0;
     private int componentCount = 0;
     private Meal meal = new Meal();
 

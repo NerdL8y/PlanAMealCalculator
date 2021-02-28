@@ -193,7 +193,7 @@ using Microsoft.AspNetCore.WebUtilities;
     protected void mealSelect(ChangeEventArgs e)
     {
         isOpened = false;
-        NavManager.NavigateTo(HomeURIService.homeUri + "mymeal");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mymeal");
         StateHasChanged();
     }
 

@@ -157,7 +157,7 @@ using PMC.Web.Data;
             SelectedRecipeService.OnChange += StateHasChanged;
             SelectedIngredientService.IngredientCount = 0;
             SelectedInstructionService.InstructionCount = 0;
-            NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
         }
         else
         {
@@ -166,7 +166,7 @@ using PMC.Web.Data;
         isOpened = false;
         //selectedCookMethod = 0;
         StateHasChanged();
-        //NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        //NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
     protected async void CheckRecipeName()
@@ -206,7 +206,7 @@ using PMC.Web.Data;
     private void recipeComplete()
     {
         SelectedRecipeService.RecipeID = 0;
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipelist");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipelist");
     }
 
 

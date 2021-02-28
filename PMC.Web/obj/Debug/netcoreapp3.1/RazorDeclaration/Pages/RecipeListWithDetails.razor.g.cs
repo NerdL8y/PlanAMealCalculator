@@ -112,8 +112,8 @@ using PMC.Web.Data;
     private RepoFactory repoFactory { get; set; }
     private int userID = 0;
     private int recipeCount = 0;
-    private int column1size = 0;
-    private int column2size = 0;
+    //private int column1size = 0;
+    //private int column2size = 0;
 
     private List<Recipe> recipes = new List<Recipe>();
 
@@ -129,7 +129,7 @@ using PMC.Web.Data;
 
     protected void MyRecipe(ChangeEventArgs e)
     {
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
 #line default

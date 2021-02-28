@@ -127,7 +127,7 @@
             SelectedRecipeService.OnChange += StateHasChanged;
             SelectedIngredientService.IngredientCount = 0;
             SelectedInstructionService.InstructionCount = 0;
-            NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
         }
         else
         {
@@ -136,7 +136,7 @@
         isOpened = false;
         //selectedCookMethod = 0;
         StateHasChanged();
-        //NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        //NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
     protected async void CheckRecipeName()
@@ -176,7 +176,7 @@
     private void recipeComplete()
     {
         SelectedRecipeService.RecipeID = 0;
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipelist");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipelist");
     }
 
 }

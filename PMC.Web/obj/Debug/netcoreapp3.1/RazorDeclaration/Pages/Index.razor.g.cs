@@ -124,7 +124,7 @@ using PMC.Web.Data;
         AppState.LoggedIn = false;
         if (client.BaseAddress == null)
         {
-            client.BaseAddress = new Uri(HomeURIService.homeUri);
+            client.BaseAddress = new Uri(HomeURIService.HomeUri);
         }
 
         var repo = repoFactory.Get<PMC.Data.SessionInfoRepo>();
@@ -134,7 +134,7 @@ using PMC.Web.Data;
         {
             repoFactory.SessionId = results.SsID;
             repoFactory.UserID = results.UserID;
-            HttpResponseMessage response = await client.GetAsync(HomeURIService.homeUri);
+            HttpResponseMessage response = await client.GetAsync(HomeURIService.HomeUri);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             AppState.LoggedIn = true;
@@ -147,7 +147,7 @@ using PMC.Web.Data;
         {
             AppState.LoggedIn = false;
             invalidLogin = "Invalid Username or Password, please try again.";
-            NavManager.NavigateTo(HomeURIService.homeUri + "/");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "/");
         }
 
 
@@ -172,12 +172,12 @@ using PMC.Web.Data;
         if (viewHelp == 1)
         {
             isOpened = false;
-            NavManager.NavigateTo(HomeURIService.homeUri + "help");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "help");
         }
         if (viewHelp == 0)
         {
             isOpened = false;
-            NavManager.NavigateTo(HomeURIService.homeUri + "plannedmeals");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "plannedmeals");
         }
     }
 
@@ -195,7 +195,7 @@ using PMC.Web.Data;
 
     protected void goToAddUserAccount()
     {
-        NavManager.NavigateTo(HomeURIService.homeUri + "adduseraccount");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "adduseraccount");
     }
 
 

@@ -127,7 +127,7 @@ using PMC.Web.Data;
     {
         var repo = repoFactory.Get<PMC.Data.UserRepo>();
         repo.SetUserHideShowHelpOnStartUp(userID);
-        NavManager.NavigateTo(HomeURIService.homeUri + "plannedmeals");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "plannedmeals");
     }
 
 

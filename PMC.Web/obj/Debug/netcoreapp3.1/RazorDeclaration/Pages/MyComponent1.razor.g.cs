@@ -116,12 +116,12 @@ using PMC.DataModel;
     private int displayNumberRows = 0;
     private List<Recipe> recipes = new List<Recipe>();
     private List<Recipe> allRecipes = new List<Recipe>();
-    private int selected = 0;
-    private Recipe currentSingleRecipe;
-    private int choiceRcp = 0;
+    //private int selected = 0;
+    //private Recipe currentSingleRecipe;
+    //private int choiceRcp = 0;
     private string participle = "a";
     private string recipeHeader = "";
-    private string optionOverflow = "overflow:hidden;";
+    //private string optionOverflow = "overflow:hidden;";
     private int prepInAdvanceHours = 0;
 
 
@@ -140,7 +140,7 @@ using PMC.DataModel;
     private void listChange()
     {
         isOpened = false;
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
 
     }
 

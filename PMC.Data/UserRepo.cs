@@ -9,7 +9,7 @@ namespace PMC.Data
     public class UserRepo
     {
         DataContext DB;
-        int userID;
+        protected int userID;
 
         public UserRepo(int userID, DataContext db)
         {

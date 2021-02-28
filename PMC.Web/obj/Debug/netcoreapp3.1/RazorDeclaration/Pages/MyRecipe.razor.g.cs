@@ -113,10 +113,10 @@ using PMC.DataModel;
     private int userID;
 
     private Recipe recipe = new Recipe();
-    private string currentRecipeName;
-    private bool validRecipeName = false;
+    //private string currentRecipeName;
+    //private bool validRecipeName = false;
 
-    private string originalRecipeName = "";
+    //private string originalRecipeName = "";
 
     //PMC1092-33 PMC1092-04
     protected override async Task OnInitializedAsync()
@@ -130,10 +130,10 @@ using PMC.DataModel;
             StateHasChanged();
             var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
             recipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
-            
+
             //recipe = repo.GetRecipeByRecipeID(SelectedRecipeService.RecipeID);
 
-   
+
             //checkIngredientCount();
             //checkInstructionCount();
 

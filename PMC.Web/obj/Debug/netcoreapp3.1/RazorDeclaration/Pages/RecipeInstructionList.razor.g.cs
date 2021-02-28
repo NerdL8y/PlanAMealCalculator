@@ -114,9 +114,9 @@ using PMC.Web.Data;
     private int userID;
     private Recipe recipe = new Recipe();
     private List<Instruction> instructions = new List<Instruction>();
-    private decimal instructionEstTime;
-    private string instDescription = "Enter new instruction";
-    private int instructionCount = 0;
+    //private decimal instructionEstTime;
+    //private string instDescription = "Enter new instruction";
+    //private int instructionCount = 0;
     private bool yesDelete = false;
     protected bool isOpened = false;
     protected int newSortOrder = 0;
@@ -124,7 +124,7 @@ using PMC.Web.Data;
     private int newUOT;
     private string newDescription;
     private List<Uot> uotList = new List<Uot>();
-    private int uot;
+    //private int uot;
 
     private int textAreaCols = 50;
     private int textAreaRows = 0;
@@ -253,8 +253,8 @@ using PMC.Web.Data;
         SelectedInstructionService.InstructionID = 0;
         SelectedInstructionService.OnChange += StateHasChanged;
         StateHasChanged();
-        NavManager.NavigateTo(HomeURIService.homeUri + "empty");
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "empty");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
     void OpenModal()

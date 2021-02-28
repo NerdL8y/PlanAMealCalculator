@@ -11,9 +11,8 @@ namespace PMC.Console
         {
 
             string testUserName = "dlroy";
-            string testPassword = "1234";
-            string v1 = "cucumber";
-            
+            string testPassword = "1234567";
+           
             
             Data.RepoFactory repoFactory = new Data.RepoFactory();
             var sessionRepo = repoFactory.Get<Data.SessionInfoRepo>();

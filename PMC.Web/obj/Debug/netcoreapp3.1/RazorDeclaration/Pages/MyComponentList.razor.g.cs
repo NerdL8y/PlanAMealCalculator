@@ -122,7 +122,7 @@ using PMC.Web.Data;
     private int componentCount = 0;
     private List<Component> components = new List<Component>();
     protected List<ComponentType> compTypes = new List<ComponentType>();
-    private int componentID = 0;
+    //private int componentID = 0;
 
     //PMC1052-04 PMC1052-06
     protected override async Task OnInitializedAsync()
@@ -156,7 +156,7 @@ using PMC.Web.Data;
     {
         isOpened = false;
         SelectedComponentService.OnChange += StateHasChanged;
-        NavManager.NavigateTo(HomeURIService.homeUri + "mycomponent");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "mycomponent");
     }
 
     bool isOpened = false;

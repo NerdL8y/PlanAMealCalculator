@@ -149,7 +149,7 @@ using PMC.DataModel;
         {
             CreateUserAccount();
             AppState.LoggedIn = true;
-            NavManager.NavigateTo(HomeURIService.homeUri + "plannedmeals");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "plannedmeals");
         }
 
         StateHasChanged();
@@ -227,7 +227,7 @@ using PMC.DataModel;
     public async void Authenticate()
     {
         AppState.LoggedIn = false;
-        client.BaseAddress = new Uri(HomeURIService.homeUri);
+        client.BaseAddress = new Uri(HomeURIService.HomeUri);
         var repo = repoFactory.Get<PMC.Data.SessionInfoRepo>();
         var results = repo.Authenticate(userName, userPassword);
 
@@ -236,12 +236,12 @@ using PMC.DataModel;
 
             repoFactory.SessionId = results.SsID;
             repoFactory.UserID = results.UserID;
-            HttpResponseMessage response = await client.GetAsync(HomeURIService.homeUri);
+            HttpResponseMessage response = await client.GetAsync(HomeURIService.HomeUri);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             AppState.LoggedIn = true;
 
-            NavManager.NavigateTo(HomeURIService.homeUri + "help");
+            NavManager.NavigateTo(HomeURIService.HomeUri + "help");
 
         }
 

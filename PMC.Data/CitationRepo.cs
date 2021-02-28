@@ -10,7 +10,7 @@ namespace PMC.Data
     {
 
         DataContext DB;
-        int userID;
+        protected int userID;
 
         public CitationRepo(int userID, DataContext db)
         {

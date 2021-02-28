@@ -165,8 +165,8 @@ using PMC.Web.Data;
         refreshInstructionEntry();
         SelectedInstructionService.InstructionCount = instructionCount;
         StateHasChanged();
-        NavManager.NavigateTo(HomeURIService.homeUri + "recipeinstructionlist");
-        NavManager.NavigateTo(HomeURIService.homeUri + "myrecipe");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "recipeinstructionlist");
+        NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
 
