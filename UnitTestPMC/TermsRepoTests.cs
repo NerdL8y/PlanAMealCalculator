@@ -28,7 +28,8 @@ namespace PMC.Data.Tests
             // act
             var repo = repoFactory.Get<Data.TermsRepo>();
             var singleTerm = repo.GetTermByTermID(1);
-            Assert.AreEqual("Bake", singleTerm.ToString());
+            System.Console.WriteLine(singleTerm.TermWord.ToString());
+            Assert.AreEqual("Bake", singleTerm.TermWord.ToString());
             //Assert.Fail();
         }
     }
