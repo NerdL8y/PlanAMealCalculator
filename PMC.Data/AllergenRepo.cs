@@ -9,7 +9,7 @@ namespace PMC.Data
 {
     public class AllergenRepo
     {
-        DataContext DB;
+        private readonly DataContext DB;
         protected int userID;
 
         public AllergenRepo(int userID, DataContext db)
@@ -19,7 +19,7 @@ namespace PMC.Data
         }
         public Allergen GetAllergenByAllergenID(int id)
         {
-            using (var connection = DB.PmcDB)
+            using var connection = DB.PmcDB;
             {
                 var allergen = connection.QueryFirstOrDefault<Allergen>(@"
                     EXECUTE [dbo].[_GetAllergenByAllergenID]
@@ -31,25 +31,21 @@ namespace PMC.Data
 
         public IEnumerable<Allergen> GetAllergenList()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var allergens = connection.Query<Allergen>(@"
+            using var connection = DB.PmcDB;
+            var allergens = connection.Query<Allergen>(@"
                     EXECUTE [dbo].[_GetAllergenList]
                     ");
-                return allergens;
-            }
+            return allergens;
         }
         public Allergen SetAllergenDescription(int id, string desc)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var allergens = connection.QueryFirstOrDefault<Allergen>(@"
+            using var connection = DB.PmcDB;
+            var allergens = connection.QueryFirstOrDefault<Allergen>(@"
                         EXECUTE [dbo].[_setAllergenDesc]
                         @AllergenID,
                         @AllergenDesc
                         ", new { AllergenID = id, AllergenDesc = desc });
-                return allergens;
-            }
+            return allergens;
         }
     }
 }

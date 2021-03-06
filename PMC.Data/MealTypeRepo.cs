@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class MealTypeRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public MealTypeRepo(int userID, DataContext db)
         {
@@ -20,25 +20,21 @@ namespace PMC.Data
 
         public MealType GetMealTypeByMealTypeIDUserID(int MealTypeID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var mealType = connection.QueryFirstOrDefault<MealType>(@"
+            using var connection = DB.PmcDB;
+            var mealType = connection.QueryFirstOrDefault<MealType>(@"
                     EXECUTE [dbo].[_GetMealTypeByMealTypeID]
                     @MealTypeID
-                    ", new { MealTypeID});
-                return mealType;
-            }
+                    ", new { MealTypeID });
+            return mealType;
         }
 
         public IEnumerable<MealType> GetMealTypes()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var mealTypes = connection.Query<MealType>(@"
+            using var connection = DB.PmcDB;
+            var mealTypes = connection.Query<MealType>(@"
                     EXECUTE [dbo].[_GetMealTypes]
                     ");
-                return mealTypes;
-            }
+            return mealTypes;
         }
 
     }

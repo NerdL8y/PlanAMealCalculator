@@ -13,7 +13,7 @@ namespace PMC.Data
         public string FirstName { get; set; }
         public bool HasSession { get { return (SessionId != new Guid()) ? true : false; } }
 
-        private Dictionary<Type, object> cache = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
 
         public T Get<T>()
         {

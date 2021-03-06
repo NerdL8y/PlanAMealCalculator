@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class PreparationTimelineIngredientsRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public PreparationTimelineIngredientsRepo(int userID, DataContext db)
         {

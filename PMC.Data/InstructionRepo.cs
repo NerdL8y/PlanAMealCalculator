@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class InstructionRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public InstructionRepo(int userID, DataContext db)
         {
@@ -20,34 +20,29 @@ namespace PMC.Data
 
         public Instruction GetInstructionByInstructionID(int id)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                         EXECUTE [dbo].[_GetInstructionByInstructionID]
                         @InstructionID
                         ", new { InstructionID = id });
-                return instruction;
-            }
+            return instruction;
         }
         public IEnumerable<Instruction> GetInstructionsByRecipeID( int id)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instructions = connection.Query<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instructions = connection.Query<Instruction>(@"
                     EXECUTE [dbo].[_GetInstructionsByRecipeID]
                     @InstructionID
                     ", new { InstructionID = id });
-                return instructions;
-            }
+            return instructions;
         }
 
         // Not working right to insert an SQL record
         
         public Instruction InsertInstructionByRecipeID(int instRecipeID, decimal instructionEstTime, int instUOTID, int instructionSortOrder, string instDescription, int userID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                     EXECUTE [dbo].[_insertInstructionByRecipeID]
 		            @_instRecipeID,
 		            @instructionEstTime,
@@ -55,111 +50,91 @@ namespace PMC.Data
 			        @instructionSortOrder,
 			        @instDescription,
 			        @userID
-                    ", new { @_instRecipeID = instRecipeID, @instructionEstTime = instructionEstTime, @_instUOTID = instUOTID, @instructionSortOrder = instructionSortOrder, @instDescription =  instDescription, @userID = userID
-                });
-                return instruction;
-            }
+                    ", new{ instRecipeID, instructionEstTime, instUOTID, instructionSortOrder, instDescription, userID});
+            return instruction;
         }
 
         public Instruction SetInstructionDescription(int InstructionID, string Instdescription)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                         EXECUTE [dbo].[_setInstDescription]
                         @InstructionID,
                         @InstDescription
-                        ", new { InstructionID, Instdescription } );
-                return instruction;
-            }
+                        ", new { InstructionID, Instdescription });
+            return instruction;
         }
 
         public Instruction SetInstructionEstTime(int InstructionID, decimal InstructionEstTime)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                         EXECUTE [dbo].[_setInstructionEstTime]
                         @InstructionID,
                         @instructionEstTime
                         ", new { InstructionID, InstructionEstTime });
-                return instruction;
-            }
+            return instruction;
         }
 
         public Instruction SetInstructionUnitOfTime(int InstructionID, int _instUOTID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                         EXECUTE [dbo].[_setInstructionUOTID]
                         @InstructionID,
                         @_instUOTID
                         ", new { InstructionID, _instUOTID });
-                return instruction;
-            }
+            return instruction;
         }
         public Instruction SetInstructionSortOrder(int InstructionID, int InstructionSortOrder)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                         EXECUTE [dbo].[_setInstructionSortOrder]
                         @InstructionID,
                         @InstructionSortOrder
                         ", new { InstructionID, InstructionSortOrder });
-                return instruction;
-            }
+            return instruction;
         }
         public IEnumerable<Instruction> GetPreparationTimelineByMealID(int MealID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var prepTimeline = connection.Query<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var prepTimeline = connection.Query<Instruction>(@"
                     EXECUTE [dbo].[_GetPrepTimelineInstructionsByMealID]
                     @MealID
                     ", new { MealID });
-                return prepTimeline;
-            }
+            return prepTimeline;
         }
         public IEnumerable<Instruction> GetPrepTimelineInstructionDatesByMealID(int MealID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var prepTimeline = connection.Query<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var prepTimeline = connection.Query<Instruction>(@"
                     EXECUTE [dbo].[_GetPrepTimelineInstructionDatesByMealID]
                     @MealID
                     ", new { MealID });
-                return prepTimeline;
-            }
+            return prepTimeline;
         }
 
         public InstructionRepo DeleteRecipeInstructionByRecipeIDInstructionIDUserID(int _instRecipeID, int InstructionID, int UserID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var recipe = connection.QueryFirstOrDefault<InstructionRepo>(@"
+            using var connection = DB.PmcDB;
+            var recipe = connection.QueryFirstOrDefault<InstructionRepo>(@"
                         EXECUTE [dbo].[_deleteRecipeInstructionByRecipeIDIstructionIDUserID]
                         @_instRecipeID,
                         @InstructionID,
                         @UserID
                         ", new { _instRecipeID, InstructionID, UserID });
-                return recipe;
-            }
+            return recipe;
         }
         public Instruction SetInstructionSortOrderByInstructionID(int InstructionID, int InstructionSortOrder)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var instruction = connection.QueryFirstOrDefault<Instruction>(@"
+            using var connection = DB.PmcDB;
+            var instruction = connection.QueryFirstOrDefault<Instruction>(@"
                         EXECUTE [dbo].[_setReorderInstructionSortOrder]
                         @InstructionID,
                         @InstructionSortOrder
-                        ", new { InstructionID , InstructionSortOrder });
-                return instruction;
-            }
+                        ", new { InstructionID, InstructionSortOrder });
+            return instruction;
         }
-
-
     }
 }

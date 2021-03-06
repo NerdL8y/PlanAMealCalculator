@@ -9,7 +9,7 @@ namespace PMC.Data
     public class CitationRepo
     {
 
-        DataContext DB;
+        private readonly DataContext DB;
         protected int userID;
 
         public CitationRepo(int userID, DataContext db)
@@ -20,13 +20,11 @@ namespace PMC.Data
 
         public IEnumerable<Citation> GetCitationList()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var citation = connection.Query<Citation>(@"
+            using var connection = DB.PmcDB; 
+            var citation = connection.Query<Citation>(@"
                     EXECUTE [dbo].[_GetCitationList]
                     ");
-                return citation;
-            }
+            return citation;
         }
     }
 }

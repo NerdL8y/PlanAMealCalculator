@@ -8,8 +8,8 @@ namespace PMC.Data
 {
     public class ShoppingListRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public ShoppingListRepo(int userID, DataContext db)
         {
@@ -18,30 +18,26 @@ namespace PMC.Data
         }
         public IEnumerable<ShoppingList> GetShoppingListByUserIDDateRange(int UserID, DateTime FromDate, DateTime ToDate)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var shoppingListRecipes = connection.Query<ShoppingList>(@"
+            using var connection = DB.PmcDB;
+            var shoppingListRecipes = connection.Query<ShoppingList>(@"
                     EXECUTE [dbo].[_GetShoppingListByUserIDDateRange]
                     @UserID, 
                     @FromDate, 
                     @ToDate
                     ", new { UserID, FromDate, ToDate });
-                return shoppingListRecipes;
-            }
+            return shoppingListRecipes;
         }
 
         public IEnumerable<ShoppingList> GetShoppingListRecipesByUserIDDateRange(int UserID, DateTime FromDate, DateTime ToDate)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var shoppingListItems = connection.Query<ShoppingList>(@"
+            using var connection = DB.PmcDB;
+            var shoppingListItems = connection.Query<ShoppingList>(@"
                     EXECUTE [dbo].[_GetShoppingListRecipesByUserIDDateRange]
                     @UserID, 
                     @FromDate, 
                     @ToDate
                     ", new { UserID, FromDate, ToDate });
-                return shoppingListItems;
-            }
+            return shoppingListItems;
         }
 
     }

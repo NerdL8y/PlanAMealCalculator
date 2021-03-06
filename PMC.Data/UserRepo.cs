@@ -8,7 +8,7 @@ namespace PMC.Data
 {
     public class UserRepo
     {
-        readonly DataContext DB;
+        private readonly DataContext DB;
         protected int userID;
 
         public UserRepo(int userID, DataContext db)

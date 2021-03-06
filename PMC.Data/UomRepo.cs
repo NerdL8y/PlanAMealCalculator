@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class UomRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public UomRepo(int userID, DataContext db)
         {
@@ -20,24 +20,20 @@ namespace PMC.Data
 
         public Uom GetUomDescriptionByUomID(int id) 
         {
-            using (var connection = DB.PmcDB)
-            {
-                var uom = connection.QueryFirstOrDefault<Uom>(@"
+            using var connection = DB.PmcDB;
+            var uom = connection.QueryFirstOrDefault<Uom>(@"
                         EXECUTE [dbo].[_GetUomByUomID]
                         @UomID
                         ", new { UomID = id });
-                return uom;
-            }
+            return uom;
         }
         public IEnumerable<Uom> GetUomList()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var uom = connection.Query<Uom>(@"
+            using var connection = DB.PmcDB;
+            var uom = connection.Query<Uom>(@"
                     EXECUTE [dbo].[_GetUomList]
                     ");
-                return uom;
-            }
+            return uom;
         }
 
     }

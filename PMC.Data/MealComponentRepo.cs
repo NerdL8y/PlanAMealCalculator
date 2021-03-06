@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class MealComponentRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public MealComponentRepo(int userID, DataContext db)
         {
@@ -20,42 +20,36 @@ namespace PMC.Data
 
         public MealComponent GetMealComponentByMealIDComponentID(int mealID, int compID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var mealComponent = connection.QueryFirstOrDefault<MealComponent>(@"
+            using var connection = DB.PmcDB;
+            var mealComponent = connection.QueryFirstOrDefault<MealComponent>(@"
                     EXECUTE [dbo].[_GetMealComponentByMealIDComponentID]
                     @_mcMealID,
                     @_mcCompID
                     ", new { _mcMealID = mealID, _mcCompID = compID });
-                return mealComponent;
-            }
+            return mealComponent;
         }
 
         public IEnumerable<MealComponent> GetMealComponentsByMealID(int MealID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var mealComponents = connection.Query<MealComponent>(@"
+            using var connection = DB.PmcDB;
+            var mealComponents = connection.Query<MealComponent>(@"
                     EXECUTE [dbo].[_GetMealComponentsByMealID]
                     @MealID
                     ", new { MealID });
-                return mealComponents;
-            }
+            return mealComponents;
         }
 
         public MealComponent InsertMealComponentByMealIDCompID(int _mcMealID, int _mcCompID, DateTime CompServeDateTime, int UserID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var mealComponent = connection.QueryFirstOrDefault<MealComponent>(@"
+            using var connection = DB.PmcDB;
+            var mealComponent = connection.QueryFirstOrDefault<MealComponent>(@"
                     EXECUTE [dbo].[_insertMealComponentByMealIDCompID]
                     @_mcMealID,
                     @_mcCompID,
                     @CompServeDateTime,
                     @UserID
                     ", new { _mcMealID, _mcCompID, CompServeDateTime, UserID });
-                return mealComponent;
-            }
+            return mealComponent;
         }
     }
 }

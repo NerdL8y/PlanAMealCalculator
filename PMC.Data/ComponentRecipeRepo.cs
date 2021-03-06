@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class ComponentRecipeRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected readonly int userID;
 
         public ComponentRecipeRepo(int userID, DataContext db)
         {
@@ -18,21 +18,18 @@ namespace PMC.Data
             this.userID = userID;
         }
 
-            public ComponentRecipeRepo InsertComponentRecipeByCompIDRecipeID(int _crCompID, int _crRecipeID, decimal PrepInAdvTime, int UserID)
+        public ComponentRecipeRepo InsertComponentRecipeByCompIDRecipeID(int _crCompID, int _crRecipeID, decimal PrepInAdvTime, int UserID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var component = connection.QueryFirstOrDefault<ComponentRecipeRepo>(@"
+            using var connection = DB.PmcDB;
+            var component = connection.QueryFirstOrDefault<ComponentRecipeRepo>(@"
                     EXECUTE [dbo].[_insertComponentRecipeByCompIDRecipeID]
                     @_crCompID,
                     @_crRecipeID,
                     @prepInAdvTime,
                     @userID
                     ", new { _crCompID, _crRecipeID, PrepInAdvTime, UserID });
-                return component;
-            }
+            return component;
         }
-
 
     }
 }

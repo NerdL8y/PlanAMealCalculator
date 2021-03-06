@@ -8,8 +8,8 @@ namespace PMC.Data
 {
     public class SessionInfoRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public SessionInfoRepo(int userID, DataContext db)
         {
@@ -19,26 +19,22 @@ namespace PMC.Data
 
         public SessionInfo Authenticate(string UserName, string UserPassword)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var sessionInfo = connection.QueryFirstOrDefault<SessionInfo>(@"
+            using var connection = DB.PmcDB;
+            var sessionInfo = connection.QueryFirstOrDefault<SessionInfo>(@"
                         EXECUTE [dbo].[spAuthenticate]
                         @UserName,
                         @UserPassword
                         ", new { UserName, UserPassword });
-                return sessionInfo;
-            }
+            return sessionInfo;
         }
         public SessionInfo Logout(int UserID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var sessionInfo = connection.QueryFirstOrDefault<SessionInfo>(@"
+            using var connection = DB.PmcDB;
+            var sessionInfo = connection.QueryFirstOrDefault<SessionInfo>(@"
                         EXECUTE [dbo].[_userLogout]
                         @UserID
-                        ", new { UserID});
-                return sessionInfo;
-            }
+                        ", new { UserID });
+            return sessionInfo;
         }
 
     }

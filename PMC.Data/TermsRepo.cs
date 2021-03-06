@@ -8,8 +8,8 @@ namespace PMC.Data
 {
     public class TermsRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public TermsRepo(int userID, DataContext db)
         {
@@ -19,24 +19,20 @@ namespace PMC.Data
 
         public IEnumerable<Term> GetTerms()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var terms = connection.Query<Term>(@"
+            using var connection = DB.PmcDB;
+            var terms = connection.Query<Term>(@"
                     EXECUTE [dbo].[_GetTerms]
                     ");
-                return terms;
-            }
+            return terms;
         }
         public Term GetTermByTermID(int TermID)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var term = connection.QueryFirstOrDefault<Term>(@"
+            using var connection = DB.PmcDB;
+            var term = connection.QueryFirstOrDefault<Term>(@"
                     EXECUTE [dbo].[_GetTermByTermID]
                     @TermID
                     ", new { TermID });
-                return term;
-            }
+            return term;
         }
     }
 }

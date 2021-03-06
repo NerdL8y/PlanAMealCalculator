@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class ComponentTypeRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public ComponentTypeRepo(int userID, DataContext db)
         {
@@ -20,13 +20,13 @@ namespace PMC.Data
 
         public IEnumerable<ComponentType> GetComponentTypes()
         {
-            using (var connection = DB.PmcDB)
-            {
+            using var connection = DB.PmcDB;
+            
                 var compTypes = connection.Query<ComponentType>(@"
                     EXECUTE [dbo].[_GetComponentTypes]
                     ");
                 return compTypes;
-            }
+
         }
 
     }

@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class FoodCategoryRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public FoodCategoryRepo(int userID, DataContext db)
         {
@@ -19,37 +19,31 @@ namespace PMC.Data
         }
         public FoodCategory GetFoodCategoryByCategoryID(int id)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var foodCategory = connection.QueryFirstOrDefault<FoodCategory>(@"
+            using var connection = DB.PmcDB;
+            var foodCategory = connection.QueryFirstOrDefault<FoodCategory>(@"
                     EXECUTE [dbo].[_GetFoodCategoryByCategoryID]
                     @FoodCategoryID
                     ", new { FoodCategoryID = id });
-                return foodCategory;
-            }
+            return foodCategory;
         }
 
         public IEnumerable<FoodCategory> GetFoodCategories()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var foodCategories = connection.Query<FoodCategory>(@"
+            using var connection = DB.PmcDB;
+            var foodCategories = connection.Query<FoodCategory>(@"
                     EXECUTE [dbo].[_GetFoodCategories]
                     ");
-                return foodCategories;
-            }
+            return foodCategories;
         }
         public IEnumerable<FoodCategory> GetShoppingListFoodCateogoriesByUserIDMealDateRange(int UserID, DateTime FromDate, DateTime ToDate)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var foodCategories = connection.Query<FoodCategory>(@"
+            using var connection = DB.PmcDB;
+            var foodCategories = connection.Query<FoodCategory>(@"
                     EXECUTE [dbo].[_GetShoppingListFoodCateogoriesByUserIDMealDateRange]
                     @UserID,
                     @fromDate,
-                    @toDate", new {UserID, FromDate, ToDate });
-                return foodCategories;
-            }
+                    @toDate", new { UserID, FromDate, ToDate });
+            return foodCategories;
         }
 
     }

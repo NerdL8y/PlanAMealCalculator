@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class PreparationTimelineRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
 
         public PreparationTimelineRepo(int userID, DataContext db)
@@ -21,14 +21,12 @@ namespace PMC.Data
 
         public IEnumerable<PreparationTimeline> GetPreparationTimelineByMealID(int id)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var prepTimeline = connection.Query<PreparationTimeline>(@"
+            using var connection = DB.PmcDB;
+            var prepTimeline = connection.Query<PreparationTimeline>(@"
                     EXECUTE [dbo].[_GetPrepTimelineInstructionsByMealID]
                     @MealID
-                    ", new { MealID = id  });
-                return prepTimeline;
-            }
+                    ", new { MealID = id });
+            return prepTimeline;
         }
 
         

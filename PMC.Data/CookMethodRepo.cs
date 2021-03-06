@@ -9,8 +9,8 @@ namespace PMC.Data
 {
     public class CookMethodRepo
     {
-        DataContext DB;
-        int userID;
+        private readonly DataContext DB;
+        protected int userID;
 
         public CookMethodRepo(int userID, DataContext db)
         {
@@ -20,25 +20,21 @@ namespace PMC.Data
 
         public CookMethod GetCookMethodByCookMethodID(int id)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var cookMethod = connection.QueryFirstOrDefault<CookMethod>(@"
+            using var connection = DB.PmcDB;
+            var cookMethod = connection.QueryFirstOrDefault<CookMethod>(@"
                     EXECUTE [dbo].[_GetCookMethodByCookMethodID]
                     @CookMethodID
                     ", new { CookMethodID = id});
-                return cookMethod;
-            }
+            return cookMethod;
         }
 
         public IEnumerable<CookMethod> GetCookMethods()
         {
-            using (var connection = DB.PmcDB)
-            {
-                var cookMethod = connection.Query<CookMethod>(@"
+            using var connection = DB.PmcDB;
+            var cookMethod = connection.Query<CookMethod>(@"
                     EXECUTE [dbo].[_GetCookMethods]
                     ");
-                return cookMethod;
-            }
+            return cookMethod;
         }
 
     }
