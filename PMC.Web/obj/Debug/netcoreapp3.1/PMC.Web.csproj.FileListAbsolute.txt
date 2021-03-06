@@ -16,7 +16,6 @@ C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\PMC.Web.RazorCo
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\App.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Counter.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Error.razor.g.cs
-C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\FetchData.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Index.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Shared\MainLayout.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Shared\NavMenu.razor.g.cs
@@ -120,7 +119,6 @@ C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\staticwebassets
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\PMC.Web.dll
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\PMC.Web.pdb
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\PMC.Web.genruntimeconfig.cache
-C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Login.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\MyRecipe.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\MyRecipeList.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\MyComponent.razor.g.cs
@@ -147,9 +145,7 @@ C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\Add
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\AddUserAccount.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\Counter.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\Error.razor.g.cs
-C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\FetchData.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\Index.razor.g.cs
-C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\Login.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\MealPreparationTimeline.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\MyComponent.razor.g.cs
 C:\Users\Debora\source\repos\PMC\PMC.Web\obj\Debug\netcoreapp3.1\Razor\Pages\MyComponentList.razor.g.cs

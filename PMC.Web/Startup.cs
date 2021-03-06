@@ -29,7 +29,6 @@ namespace PMC.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<HomeURIService>();
             services.AddScoped<RepoFactory>();
             services.AddScoped<AppState>();

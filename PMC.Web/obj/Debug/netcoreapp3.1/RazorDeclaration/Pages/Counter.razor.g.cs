@@ -84,14 +84,16 @@ using PMC.Web.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 9 "C:\Users\Debora\source\repos\PMC\PMC.Web\Pages\Counter.razor"
+#line 11 "C:\Users\Debora\source\repos\PMC\PMC.Web\Pages\Counter.razor"
        
+    /*
     private int currentCount = 0;
 
     private void IncrementCount()
     {
         currentCount++;
     }
+    */
 
 #line default
 #line hidden
