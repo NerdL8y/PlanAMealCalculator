@@ -137,12 +137,14 @@ using PMC.DataModel;
     protected string what = "InitialValue";
     static readonly HttpClient client = new HttpClient();
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         repoFactory.Get<PMC.Data.UserRepo>();
     }
+#pragma warning restore 1998
 
-    protected async void CheckPassword()
+    protected void CheckPassword()
     {
         attemptedToAddAccount = true;
         if (userPassword == userPasswordCompare)
@@ -156,7 +158,7 @@ using PMC.DataModel;
     }
 
     //PMC1092-25 PMC1092-38 PMC1093-06 
-    protected async void CreateUserAccount()
+    protected void CreateUserAccount()
     {
         var repo = repoFactory.Get<PMC.Data.UserRepo>();
         byte[] password = System.Text.ASCIIEncoding.ASCII.GetBytes(userPassword);
@@ -174,7 +176,7 @@ using PMC.DataModel;
 
     }
 
-    public async void CheckThisUserName()
+    public void CheckThisUserName()
     {
         var repo = repoFactory.Get<PMC.Data.UserRepo>();
         var checkResponse = repo.CheckUserName(userName);
@@ -200,7 +202,7 @@ using PMC.DataModel;
         StateHasChanged();
 
     }
-    public async void CheckEmailAddress(string userEmail)
+    public void CheckEmailAddress(string userEmail)
     {
 
 

@@ -113,14 +113,16 @@ using PMC.DataModel;
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     //private string pmcImage = "PMC_Logo_trnsprnt.png";
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         AppState.OnChange += StateHasChanged;
         SelectedMealService.OnChange += StateHasChanged;
         SelectedRecipeService.OnChange += StateHasChanged;
         SelectedComponentService.OnChange += StateHasChanged;
-        
+
     }
+#pragma warning restore 1998
 
     private void ToggleNavMenu()
     {

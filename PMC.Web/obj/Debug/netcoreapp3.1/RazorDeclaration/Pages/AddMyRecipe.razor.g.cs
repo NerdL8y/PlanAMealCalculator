@@ -122,10 +122,10 @@ using PMC.Web.Data;
     private List<Cookware> cookware = new List<Cookware>();
     private int selectedCookMethod = 0;
     private int selectedCookware = 1;
-    private bool readyAddInstruction = false;
+    //private bool readyAddInstruction = false;
     private int cookMethodCount = 0;
 
-
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -139,9 +139,10 @@ using PMC.Web.Data;
         SelectedIngredientService.IngredientID = 0;
 
     }
+#pragma warning restore 1998
 
     //PMC1032-01 PMC1034-01 PMC1092-03 
-    public async void AddRecipe()
+    public void AddRecipe()
     {
 
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
@@ -169,7 +170,7 @@ using PMC.Web.Data;
         //NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
-    protected async void CheckRecipeName()
+    protected void CheckRecipeName()
     {
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
         var recipeName = repo.CheckRecipeNameByUserID(RecipeName, userID);
@@ -186,10 +187,10 @@ using PMC.Web.Data;
         StateHasChanged();
     }
 
-    protected async void DisplayInstructionArea()
+    protected void DisplayInstructionArea()
     {
         isOpened = false;
-        readyAddInstruction = true;
+        //readyAddInstruction = true;
         StateHasChanged();
     }
 

@@ -24,7 +24,7 @@
         }
 
 
-    @code {
+@code {
 
         [Inject]
         private RepoFactory repoFactory { get; set; }
@@ -34,6 +34,7 @@
         private List<Recipe> recipeList = new List<Recipe>();
         private Recipe recipe = new Recipe();
 
+#pragma warning disable 1998
         protected override async Task OnInitializedAsync()
         {
             userID = repoFactory.UserID;
@@ -42,4 +43,5 @@
             var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
             recipeList = repo.GetRecipesByUserID(userID).ToList();
         }
-    }
+#pragma warning restore 1998
+}

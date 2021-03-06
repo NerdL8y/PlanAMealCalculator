@@ -113,12 +113,14 @@ using PMC.Web.Data;
     private int userID;
     private List<Term> terms = new List<Term>();
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
         var repo = repoFactory.Get<PMC.Data.TermsRepo>();
         terms = repo.GetTerms().ToList();
     }
+#pragma warning restore 1998
 
 
 #line default

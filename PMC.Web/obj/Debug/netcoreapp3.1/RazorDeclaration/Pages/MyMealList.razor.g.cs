@@ -139,6 +139,7 @@ using Microsoft.AspNetCore.WebUtilities;
     private int lunchMealType = 3;
     private int dinnerMealType = 4;
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
 
@@ -169,6 +170,7 @@ using Microsoft.AspNetCore.WebUtilities;
         //NavigationManager.NavigateTo("/mymeal");
         currentUri = uri2.ToString();
     }
+#pragma warning restore 1998
 
     private void getMeals()
     {

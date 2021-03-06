@@ -115,6 +115,7 @@ using PMC.Web.Data;
     private UserAccount user = new UserAccount();
     private int userHelp;
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -122,6 +123,7 @@ using PMC.Web.Data;
         user = repo.GetUserByUserID(userID);
         userHelp = user.ShowHelpOnStartUp;
     }
+#pragma warning restore 1998
 
     protected void hideHelp()
     {

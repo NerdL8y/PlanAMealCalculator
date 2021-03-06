@@ -10,17 +10,17 @@ namespace PMC.Web.Data
 
     public class HomeURIService
     {
-        private string _homeUri;
-        
+        private readonly string _homeUri = "https://localhost:44311/";
+               
         public string HomeUri
         {
             get
             {
-                return "https://localhost:44311/";
+                return _homeUri;
             }
             set
             {
-                _homeUri = "https://localhost:44311/";
+                //_homeUri = "https://localhost:44311/";
             }
         }
     }

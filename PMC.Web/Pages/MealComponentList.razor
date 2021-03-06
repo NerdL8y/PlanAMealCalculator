@@ -47,40 +47,24 @@
     private int componentCount = 0;
     private Meal meal = new Meal();
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
-
-
     }
+#pragma warning restore 1998
 
 
-    protected async void GetRepoInformation()
+    protected void GetRepoInformation()
     {
-        //component info
         var mealRepo = repoFactory.Get<PMC.Data.MealRepo>();
         meal = mealRepo.GetMealByMealID(SelectedMealService.MealID);
-        //components = meal.Components.ToList();
-        //componentCount = components.Count();
 
         var repo = repoFactory.Get<PMC.Data.MealComponentRepo>();
         mealComponents = repo.GetMealComponentsByMealID(SelectedMealService.MealID).ToList();
         componentCount = mealComponents.Count();
 
-        //appetizers = components.GetComponentAppetizersByUserID(userID).ToList();
-        //entrees = componentRepo.GetComponentEntreesByUserID(userID).ToList();
-        //desserts = componentRepo.GetComponentDessertsByUserID(userID).ToList();
-        //appcount = appetizers.Count();
-        //entreecount = entrees.Count();
-        //dessertcount = desserts.Count();
-        //componentType = 0;
-
-        //component type info
-        //var repo = repoFactory.Get<PMC.Data.ComponentTypeRepo>();
-        //var repoList = repo.GetComponentTypes().ToList();
-        //compTypes = repoList;
         StateHasChanged();
-
     }
 
 }

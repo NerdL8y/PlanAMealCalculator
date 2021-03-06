@@ -124,6 +124,7 @@ using PMC.Web.Data;
     private int textAreaCols = 50;
     private int textAreaRows = 2;
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -147,9 +148,10 @@ using PMC.Web.Data;
         stepCounter = SelectedInstructionService.InstructionCount + 1;
 
     }
+#pragma warning restore 1998
 
     //PMC1032-06 PMC1032-07 PMC1092-07 PMC1092-08
-    protected async void addInstruction()
+    protected void addInstruction()
     {
         var instructionRepo = repoFactory.Get<PMC.Data.InstructionRepo>();
         var insertedInstruction = instructionRepo.InsertInstructionByRecipeID(SelectedRecipeService.RecipeID, instructionEstTime, uot, stepCounter, instDescription, userID);
@@ -171,7 +173,7 @@ using PMC.Web.Data;
 
 
     //refreshes fields after a successful ingredient insert to prepare for the next ingredient to be added.
-    protected async void refreshInstructionEntry()
+    protected void refreshInstructionEntry()
     {
         instructionEstTime = 0;
         uot = 0;

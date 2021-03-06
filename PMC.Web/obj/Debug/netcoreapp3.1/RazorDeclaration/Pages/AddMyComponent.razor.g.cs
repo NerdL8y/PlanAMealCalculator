@@ -126,7 +126,7 @@ using PMC.DataModel;
     private int dessertcount = 0;
     private int componentCount = 0;
 
-
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -134,11 +134,11 @@ using PMC.DataModel;
         componentType = 0;
         SelectedComponentService.ComponentID = 0;
         GetRepoInformation();
-
     }
+#pragma warning restore 1998
 
     //PMC1092-10 PMC1092-26 PMC1092-27
-    protected async void AddComponent()
+    protected void AddComponent()
     {
         componentCount = 0;
         appcount = 0;
@@ -153,7 +153,7 @@ using PMC.DataModel;
     }
 
     //Gathers data necessary to populate lists used in foreach loops, etc.
-    protected async void GetRepoInformation()
+    protected void GetRepoInformation()
     {
         //component info
         var componentRepo = repoFactory.Get<PMC.Data.ComponentRepo>();

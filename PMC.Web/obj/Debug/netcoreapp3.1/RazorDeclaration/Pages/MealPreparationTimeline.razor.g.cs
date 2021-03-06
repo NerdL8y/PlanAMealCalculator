@@ -117,6 +117,8 @@ using PMC.DataModel;
     private int userID;
 
     //PMC1073-01 PMC1074-01 PMC1092-21 PMC1092-39 PMC1092-40 PMC1053-01
+
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -136,14 +138,9 @@ using PMC.DataModel;
             var currIngredientList = repoIngredient.GetPrepTimelineIngredientsByMealID(SelectedMealService.MealID).ToList();
             recipeIngredientsList = currIngredientList;
 
-            //var currRecipeIngredients = repoIngredient.Get
-
-
-
-
         }
-
     }
+#pragma warning restore 1998
 
 
 #line default

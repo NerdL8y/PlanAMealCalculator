@@ -136,7 +136,7 @@ using PMC.DataModel;
     private DateTime dateCompiled;
     //private DateTime servetime;
 
-
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -170,9 +170,10 @@ using PMC.DataModel;
             MealGuests = currentRepo.UserNumFamMembers;
         }
     }
+#pragma warning restore 1998
 
     //PMC1092-09 PMC1092-13 PMC1092-32
-    public async void AddMeal()
+    public void AddMeal()
     {
         validMealName = false;
         var repo = repoFactory.Get<PMC.Data.MealRepo>();
@@ -196,7 +197,7 @@ using PMC.DataModel;
     }
 
     //verifies the meal name does not already exists for the user in the database.
-    public async void CheckMealName()
+    public void CheckMealName()
     {
         var repo = repoFactory.Get<PMC.Data.MealRepo>();
         var mealinfo = repo.CheckMealNameByUserID(MealName, userID);
@@ -213,7 +214,7 @@ using PMC.DataModel;
 
 
 
-    protected async void AddComponentToMeal()
+    protected void AddComponentToMeal()
     {
 
         SelectedComponentService.OnChange += StateHasChanged;

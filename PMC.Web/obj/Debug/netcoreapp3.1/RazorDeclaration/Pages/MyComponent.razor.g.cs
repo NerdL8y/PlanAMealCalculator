@@ -105,7 +105,7 @@ using PMC.DataModel;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 133 "C:\Users\Debora\source\repos\PMC\PMC.Web\Pages\MyComponent.razor"
+#line 131 "C:\Users\Debora\source\repos\PMC\PMC.Web\Pages\MyComponent.razor"
        
 
     [Inject]
@@ -119,19 +119,18 @@ using PMC.DataModel;
     //private int selected = 0;
     private string selectedRecipeName = "";
     //private int choiceRcp = 0;
-    private string participle = "An";
-    private string recipeHeader = "";
+    //private string participle;
+    //private string recipeHeader = "";
     //private string optionOverflow = "overflow:hidden;";
     private int prepInAdvanceHours = 0;
-    private string recipeSearch = "";
+    //private string recipeSearch = "";
     private List<Recipe> filteredRecipes = new List<Recipe>();
     private int recipeSearchCount = 0;
-    private string searchUnsuccessful = "";
     private string currentComponentName = "";
     //private bool pia = false;
 
 
-
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -142,8 +141,9 @@ using PMC.DataModel;
         currentComponentName = component.CompName;
         refreshRecipes();
         getAllRecipes();
-        setGrammar();
+        //setGrammar();
     }
+#pragma warning restore 1998
 
     //PMC1092-24
     private void changeComponentName()
@@ -160,9 +160,12 @@ using PMC.DataModel;
         NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
 
     }
-
+    /*
+    //This doesn't appear to be used right now.
     private void setGrammar()
     {
+        participle = "An";
+
         if (thisComponent._cCompType != 3)
         {
             participle = "A";
@@ -192,6 +195,7 @@ using PMC.DataModel;
         StateHasChanged();
         isOpened = false;
     }
+    */
 
     private void getAllRecipes()
     {
@@ -219,19 +223,20 @@ using PMC.DataModel;
         recipes = rcpRepo.GetRecipesByCompID(SelectedComponentService.ComponentID).ToList();
         recipeCount = recipes.Count();
         displayNumberRows = recipeCount + 5;
-        setGrammar();
+        //setGrammar();
         StateHasChanged();
         isOpened = false;
     }
 
     //PMC1092-28
-    protected async void SearchRecipes()
+/*    
+    protected void SearchRecipes()
     {
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
         var rcpList = repo.SearchRecipeNameByUserID(recipeSearch, userID).ToList();
         filteredRecipes = rcpList;
         recipeSearchCount = rcpList.Count() + 3;
-        searchUnsuccessful = "";
+        var searchUnsuccessful = "";
         if (recipeSearchCount == 0)
         {
             searchUnsuccessful = "We could not find a recipe using the criteria entered. If you have entered a plural word like 'cakes' change it to 'cake' and try again";
@@ -239,8 +244,10 @@ using PMC.DataModel;
         StateHasChanged();
         isOpened = false;
     }
+*/
+    
 
-    protected async void SelectRecipe()
+    protected void SelectRecipe()
     {
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
         var currRecipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);

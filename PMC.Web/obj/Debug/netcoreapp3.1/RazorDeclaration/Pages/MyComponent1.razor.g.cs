@@ -124,7 +124,7 @@ using PMC.DataModel;
     //private string optionOverflow = "overflow:hidden;";
     private int prepInAdvanceHours = 0;
 
-
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -136,6 +136,7 @@ using PMC.DataModel;
         getAllRecipes();
         setGrammar();
     }
+#pragma warning restore 1998
 
     private void listChange()
     {

@@ -87,6 +87,7 @@
     private int lunchMealType = 3;
     private int dinnerMealType = 4;
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
 
@@ -117,6 +118,7 @@
         //NavigationManager.NavigateTo("/mymeal");
         currentUri = uri2.ToString();
     }
+#pragma warning restore 1998
 
     private void getMeals()
     {

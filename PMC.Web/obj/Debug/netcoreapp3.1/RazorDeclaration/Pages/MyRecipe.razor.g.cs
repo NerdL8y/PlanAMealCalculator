@@ -119,6 +119,7 @@ using PMC.DataModel;
     //private string originalRecipeName = "";
 
     //PMC1092-33 PMC1092-04
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -131,16 +132,11 @@ using PMC.DataModel;
             var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
             recipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
 
-            //recipe = repo.GetRecipeByRecipeID(SelectedRecipeService.RecipeID);
-
-
-            //checkIngredientCount();
-            //checkInstructionCount();
-
             StateHasChanged();
         }
 
     }
+#pragma warning restore 1998
 
     private void checkIngredientCount()
     {

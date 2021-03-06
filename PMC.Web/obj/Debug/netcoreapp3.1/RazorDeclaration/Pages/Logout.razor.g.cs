@@ -104,6 +104,7 @@ using PMC.Web.Data;
     private RepoFactory repoFactory { get; set; }
     private int userID;
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -114,6 +115,7 @@ using PMC.Web.Data;
         AppState.LoggedIn = false;
         NavManager.NavigateTo(HomeURIService.HomeUri + "/");
     }
+#pragma warning restore 1998
 
 #line default
 #line hidden

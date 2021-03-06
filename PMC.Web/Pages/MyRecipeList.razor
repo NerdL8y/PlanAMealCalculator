@@ -45,13 +45,14 @@
     private Recipe recipe = new Recipe();
     private int displayWidth = 0;
     //TODO change string for search
-    private string recipeSearch = "Enter a recipe name here";
+    //private string recipeSearch = "Enter a recipe name here";
     private List<Recipe> filteredRecipes = new List<Recipe>();
-    private int recipeSearchCount = 0;
-    private string searchUnsuccessful = "";
+    //private int recipeSearchCount = 0;
+    //private string searchUnsuccessful = "";
     private bool viewAllRecipes = false;
     //private string selectedRecipeName = "";
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -62,8 +63,11 @@
         displayWidth = recipe.MaxRecipeNameSize;
 
     }
+#pragma warning restore 1998
 
-    protected async void SearchRecipes()
+    /*
+    // This can be used when a search function is added to the MyRecipe page 
+    protected void SearchRecipes()
     {
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
         var rcpList = repo.SearchRecipeNameByUserID(recipeSearch, userID).ToList();
@@ -81,6 +85,7 @@
         StateHasChanged();
         isOpened = false;
     }
+    */
 
     protected void MyRecipe(ChangeEventArgs e)
     {

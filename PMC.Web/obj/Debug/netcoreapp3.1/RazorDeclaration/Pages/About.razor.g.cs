@@ -114,11 +114,13 @@ using PMC.DataModel;
     private string excelImage = "excelexample.png";
     private List<Citation> citations = new List<Citation>();
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         var repo = repoFactory.Get<PMC.Data.CitationRepo>();
         citations = repo.GetCitationList().ToList();
     }
+#pragma warning restore 1998
 
 
 #line default

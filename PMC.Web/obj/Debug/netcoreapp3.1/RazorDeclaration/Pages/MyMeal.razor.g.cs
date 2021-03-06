@@ -151,6 +151,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 
     //PMC1092-31
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -183,6 +184,7 @@ using Microsoft.AspNetCore.WebUtilities;
         }
 
     }
+#pragma warning restore 1998
 
     private void changeMade()
     {
@@ -202,7 +204,7 @@ using Microsoft.AspNetCore.WebUtilities;
         refreshPage();
     }
 
-    protected async void AddComponentToMeal()
+    protected void AddComponentToMeal()
     {
 
         SelectedComponentService.OnChange += StateHasChanged;
@@ -221,7 +223,7 @@ using Microsoft.AspNetCore.WebUtilities;
         StateHasChanged();
     }
 
-    protected async void RefreshComponentInfo()
+    protected void RefreshComponentInfo()
     {
         var crepo = repoFactory.Get<PMC.Data.MealComponentRepo>();
         SelectedComponentService.ComponentID = 0;

@@ -141,9 +141,10 @@
     private string ingrCondition = "";
     //private int testIngredientID;
     private List<Uom> uomList = new List<Uom>();
-    private bool onclickMe = false;
+    //private bool onclickMe = false;
     private string errmsg = "";
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -156,10 +157,10 @@
         uomList = uomlist;
 
         SelectedIngredientService.IngredientID = 0;
-
     }
+#pragma warning restore 1998
 
-    protected async void SearchIngredients()
+    protected void SearchIngredients()
     {
         var ingredientRepo = repoFactory.Get<PMC.Data.IngredientRepo>();
         var ingrList = ingredientRepo.SearchIngredients(ingrSearch).ToList();
@@ -175,7 +176,7 @@
 
 
     //PMC1032-02 PMC1032-03 PMC1032-04 PMC1032-05 PMC1032-08 PMC1092-05 PMC1092-06 PMC1092-42
-    protected async void addIngredient()
+    protected void addIngredient()
     {
         checkIngredientInfo();
         if (ingredientQty <= 20000)
@@ -208,7 +209,7 @@
     public void listChange()
     {
         errmsg = "";
-        onclickMe = true;
+        //onclickMe = true;
         var repo = repoFactory.Get<PMC.Data.IngredientRepo>();
         ingredient = repo.GetIngredientByIngredientID(SelectedIngredientService.IngredientID);
         selectedIngredientName = ingredient.IngredientName;
@@ -217,7 +218,7 @@
     }
 
     //resets the fields so user can search for another ingredient
-    protected async void refreshIngredientSearch()
+    protected void refreshIngredientSearch()
     {
 
         //ingrSearch = "Enter up to four keywords to search";

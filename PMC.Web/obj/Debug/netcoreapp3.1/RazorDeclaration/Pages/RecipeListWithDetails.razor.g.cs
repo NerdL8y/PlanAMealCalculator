@@ -117,6 +117,7 @@ using PMC.Web.Data;
 
     private List<Recipe> recipes = new List<Recipe>();
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -126,6 +127,7 @@ using PMC.Web.Data;
         recipeCount = recipes.Count();
 
     }
+#pragma warning restore 1998
 
     protected void MyRecipe(ChangeEventArgs e)
     {

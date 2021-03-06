@@ -106,7 +106,7 @@ using PMC.Web.Data;
         #pragma warning restore 1998
 #nullable restore
 #line 27 "C:\Users\Debora\source\repos\PMC\PMC.Web\Pages\RecipeTable.razor"
-           
+       
 
         [Inject]
         private RepoFactory repoFactory { get; set; }
@@ -116,6 +116,7 @@ using PMC.Web.Data;
         private List<Recipe> recipeList = new List<Recipe>();
         private Recipe recipe = new Recipe();
 
+#pragma warning disable 1998
         protected override async Task OnInitializedAsync()
         {
             userID = repoFactory.UserID;
@@ -124,7 +125,7 @@ using PMC.Web.Data;
             var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
             recipeList = repo.GetRecipesByUserID(userID).ToList();
         }
-    
+#pragma warning restore 1998
 
 #line default
 #line hidden

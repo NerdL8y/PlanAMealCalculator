@@ -123,14 +123,15 @@ using PMC.Web.Data;
         protected DateTime tempDateBegin;
         protected DateTime tempDateEnd;
 
-
+#pragma warning disable 1998
         protected override async Task OnInitializedAsync()
         {
             userID = repoFactory.UserID;
         }
+#pragma warning restore 1998
 
         //PMC1054-02 PMC1054-03 PMC1054-04 PMC1054-05 PMC1092-35
-        public async void GetShoppingList()
+        public void GetShoppingList()
         {
             shoppingListCount = 0;
             errmsg = false;

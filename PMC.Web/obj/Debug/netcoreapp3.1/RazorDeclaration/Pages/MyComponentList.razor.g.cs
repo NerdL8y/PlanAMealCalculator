@@ -125,6 +125,7 @@ using PMC.Web.Data;
     //private int componentID = 0;
 
     //PMC1052-04 PMC1052-06
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -151,6 +152,7 @@ using PMC.Web.Data;
         compTypes = repoList;
         StateHasChanged();
     }
+#pragma warning restore 1998
 
     public void listChange(ChangeEventArgs e)
     {

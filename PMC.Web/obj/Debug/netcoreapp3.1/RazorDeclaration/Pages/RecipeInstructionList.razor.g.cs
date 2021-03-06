@@ -121,7 +121,7 @@ using PMC.Web.Data;
     protected bool isOpened = false;
     protected int newSortOrder = 0;
     protected decimal newEstTime;
-    private int newUOT;
+    //private int newUOT;
     private string newDescription;
     private List<Uot> uotList = new List<Uot>();
     //private int uot;
@@ -129,6 +129,7 @@ using PMC.Web.Data;
     private int textAreaCols = 50;
     private int textAreaRows = 0;
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -146,8 +147,9 @@ using PMC.Web.Data;
 
         StateHasChanged();
     }
+#pragma warning restore 1998
 
-    protected async void AskDelete()
+    protected void AskDelete()
     {
 
         OpenModal();
@@ -156,13 +158,13 @@ using PMC.Web.Data;
 
     }
 
-    protected async void DoNotDelete()
+    protected void DoNotDelete()
     {
         yesDelete = false;
         StateHasChanged();
     }
 
-    protected async void Delete()
+    protected void Delete()
     {
         var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
         repo.DeleteRecipeInstructionByRecipeIDInstructionIDUserID(SelectedRecipeService.RecipeID, SelectedInstructionService.InstructionID, userID);
@@ -217,6 +219,7 @@ using PMC.Web.Data;
         refreshPage();
     }
 
+    /* I could not figure out how to display new Unit of Time values for modification, TODO
     private void setInstructionUOT()
     {
         var repo = repoFactory.Get<PMC.Data.InstructionRepo>();
@@ -224,6 +227,7 @@ using PMC.Web.Data;
 
         refreshPage();
     }
+    */
 
     private int calculateTextareaHeight(string instDesc)
     {

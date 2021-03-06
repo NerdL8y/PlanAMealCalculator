@@ -120,6 +120,7 @@ using PMC.DataModel;
     //private string tempStartDate = "";
 
     //PMC1052-01 PMC1052-05 PMC1055-01 PMC1055-02 PMC1092-17
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
 
@@ -130,6 +131,7 @@ using PMC.DataModel;
         plannedMealList = meals.ToList();
         SelectedMealService.MealCount = plannedMealList.Count();
     }
+#pragma warning restore 1998
 
     protected void setMealID(int id)
     {

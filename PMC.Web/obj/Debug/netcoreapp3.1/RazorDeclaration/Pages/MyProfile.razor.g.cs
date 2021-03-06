@@ -117,6 +117,7 @@ using PMC.DataModel;
     private string currentUserName;
 
     //PMC1092-38 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -129,6 +130,7 @@ using PMC.DataModel;
             currentUserName = user.UserName + "'s";
         }
     }
+#pragma warning restore 1998
 
     protected void helpOnStartUp()
     {

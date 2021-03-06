@@ -132,18 +132,16 @@ using PMC.Web.Data;
     protected int newUOM;
     private string errmsg = "";
 
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
 
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
-        //recipe = repo.GetRecipeByRecipeID(SelectedRecipeService.RecipeID);
-        //ingredients = recipe.Ingredients.ToList();
 
         var currRecipeIngredientRepo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
         var newList = currRecipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
         ingredients = newList.ToList();
-        //SelectedIngredientService.IngredientCount = recipeIngredients.Count();
         var ingrList = currRecipeIngredientRepo.GetIngredientsByRecipeID(SelectedRecipeService.RecipeID);
         initialIngredientCount = ingrList.Count();
         SelectedIngredientService.IngredientCount = ingrList.Count();
@@ -152,10 +150,10 @@ using PMC.Web.Data;
         var uomlist = uomRepo.GetUomList().ToList();
         uomList = uomlist;
 
-        //SelectedIngredientService.IngredientID = 0;
         ingredientDeleted = false;
         StateHasChanged();
     }
+#pragma warning restore 1998
 
     private void getIngredients()
     {
@@ -165,16 +163,15 @@ using PMC.Web.Data;
         SelectedIngredientService.IngredientCount = recipeIngredients.Count();
     }
 
-    protected async void AskDeleteIngredient()
+    protected void AskDeleteIngredient()
     {
         checkedRadio = true;
         OpenModal();
         yesDelete = true;
         StateHasChanged();
-
     }
 
-    protected async void DoNotDeleteIngredient()
+    protected void DoNotDeleteIngredient()
     {
         checkedRadio = false;
         yesDelete = false;
@@ -182,7 +179,7 @@ using PMC.Web.Data;
         NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
     }
 
-    protected async void DeleteIngredient()
+    protected void DeleteIngredient()
     {
 
         var repo = repoFactory.Get<PMC.Data.RecipeIngredientRepo>();
@@ -194,7 +191,6 @@ using PMC.Web.Data;
         SelectedIngredientService.IngredientCount = ingrList.Count();
         CloseModal();
         StateHasChanged();
-
     }
 
     //PMC1033-02

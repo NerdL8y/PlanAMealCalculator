@@ -99,11 +99,13 @@
     @if (SelectedRecipeService.RecipeID == 0)
     {
         <div>
+            <!--This is disabled until a search function is implemented
             <div>
                 <span class="oi oi-magnifying-glass" /><span></span>
                 <input id="txtRecipeSearch" tabindex="1" @bind="@recipeSearch" type="text" style="width:500px" placeholder="Enter up to four words to search" onclick="this.setSelectionRange(0, this.value.length)" />
                 <input id="btnSearchRecipes" tabindex="2" @onclick="@SearchRecipes" type="button" value="Search" />
             </div>
+                -->
             <div>
                 <select class="select-list" @bind="@SelectedRecipeService.RecipeID" aria-hidden="true" size="@recipeSearchCount" style="width:45%">
                     @foreach (var list in filteredRecipes)
@@ -123,11 +125,7 @@
     {
         <div>@selectedRecipeName</div>
         <div style="padding-top:10px"><input id="btnAddRecipe" @onclick="@addMyRecipe" type="button" value="Add Recipe to Component" /></div>
-
     }
-
-
-
 }
 
 @code {
@@ -143,19 +141,18 @@
     //private int selected = 0;
     private string selectedRecipeName = "";
     //private int choiceRcp = 0;
-    private string participle = "An";
-    private string recipeHeader = "";
+    //private string participle;
+    //private string recipeHeader = "";
     //private string optionOverflow = "overflow:hidden;";
     private int prepInAdvanceHours = 0;
-    private string recipeSearch = "";
+    //private string recipeSearch = "";
     private List<Recipe> filteredRecipes = new List<Recipe>();
     private int recipeSearchCount = 0;
-    private string searchUnsuccessful = "";
     private string currentComponentName = "";
     //private bool pia = false;
 
 
-
+#pragma warning disable 1998
     protected override async Task OnInitializedAsync()
     {
         userID = repoFactory.UserID;
@@ -166,8 +163,9 @@
         currentComponentName = component.CompName;
         refreshRecipes();
         getAllRecipes();
-        setGrammar();
+        //setGrammar();
     }
+#pragma warning restore 1998
 
     //PMC1092-24
     private void changeComponentName()
@@ -184,9 +182,12 @@
         NavManager.NavigateTo(HomeURIService.HomeUri + "myrecipe");
 
     }
-
+    /*
+    //This doesn't appear to be used right now.
     private void setGrammar()
     {
+        participle = "An";
+
         if (thisComponent._cCompType != 3)
         {
             participle = "A";
@@ -216,6 +217,7 @@
         StateHasChanged();
         isOpened = false;
     }
+    */
 
     private void getAllRecipes()
     {
@@ -243,19 +245,20 @@
         recipes = rcpRepo.GetRecipesByCompID(SelectedComponentService.ComponentID).ToList();
         recipeCount = recipes.Count();
         displayNumberRows = recipeCount + 5;
-        setGrammar();
+        //setGrammar();
         StateHasChanged();
         isOpened = false;
     }
 
     //PMC1092-28
-    protected async void SearchRecipes()
+/*    
+    protected void SearchRecipes()
     {
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
         var rcpList = repo.SearchRecipeNameByUserID(recipeSearch, userID).ToList();
         filteredRecipes = rcpList;
         recipeSearchCount = rcpList.Count() + 3;
-        searchUnsuccessful = "";
+        var searchUnsuccessful = "";
         if (recipeSearchCount == 0)
         {
             searchUnsuccessful = "We could not find a recipe using the criteria entered. If you have entered a plural word like 'cakes' change it to 'cake' and try again";
@@ -263,8 +266,10 @@
         StateHasChanged();
         isOpened = false;
     }
+*/
+    
 
-    protected async void SelectRecipe()
+    protected void SelectRecipe()
     {
         var repo = repoFactory.Get<PMC.Data.RecipeRepo>();
         var currRecipe = repo.GetRecipeOnlyByRecipeID(SelectedRecipeService.RecipeID);
