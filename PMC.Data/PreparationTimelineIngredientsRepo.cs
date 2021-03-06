@@ -18,18 +18,16 @@ namespace PMC.Data
             this.userID = userID;
         }
 
-        /*public IEnumerable<PreparationTimelineIngredients> GetPreparationTimelineIngredientsByMealID(int id)
+        public IEnumerable<PreparationTimelineIngredients> GetPreparationTimelineIngredientsByMealID(int id)
         {
-            using (var connection = DB.PmcDB)
-            {
-                var prepTimelineIngredients = connection.Query<PreparationTimelineIngredients>(@"
+            using var connection = DB.PmcDB;
+            var prepTimelineIngredients = connection.Query<PreparationTimelineIngredients>(@"
                     EXECUTE [dbo].[_GetPrepTimelineIngredientsByMealID]
                     @MealID
                     ", new { MealID = id });
-                return prepTimelineIngredients;
-            }
+            return prepTimelineIngredients;
         }
-        */
+        
 
 
     }
