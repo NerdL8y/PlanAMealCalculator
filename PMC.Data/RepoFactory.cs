@@ -11,7 +11,8 @@ namespace PMC.Data
         public Guid SessionId { get; set; }
         public int UserID { get; set; }
         public string FirstName { get; set; }
-        public bool HasSession { get { return (SessionId != new Guid()) ? true : false; } }
+        //public bool HasSession { get { return (SessionId != new Guid()) ? true : false; } }
+        public bool HasSession { get { return (SessionId != new Guid()); } }
 
         private readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
 
